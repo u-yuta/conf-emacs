@@ -2,9 +2,9 @@
 ;; can override the document path by setting your path in the variable
 ;; org-mode-user-lisp-path
 ;;
-(if (boundp 'org-mode-user-lisp-path)
-    (add-to-list 'load-path org-mode-user-lisp-path)
-  (add-to-list 'load-path (expand-file-name "~/git/org-mode/lisp")))
+;(if (boundp 'org-mode-user-lisp-path)
+;    (add-to-list 'load-path org-mode-user-lisp-path)
+;  (add-to-list 'load-path (expand-file-name "~/git/org-mode/lisp")))
 
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 (require 'org)
