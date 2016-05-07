@@ -559,6 +559,7 @@
              '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
+(require 'use-package)
 
 ;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;;
 ;;; @ theme                                                         ;;;
@@ -654,19 +655,19 @@
 ;; undo、redo設定
 ;; ------------------------------------------------------------------------
 ;; redo+
-(when (require 'redo+ nil t)
-  (global-set-key (kbd "C-?") 'redo))
+(use-package redo+
+  :bind ("C-?" . redo))
 ;; undo-hist
-(when (require 'undohist nil t)
-  (undohist-initialize))
+(use-package undohist
+  :config (undohist-initialize))
 ;; undo-tree
-(when (require 'undo-tree nil t)
-   (global-undo-tree-mode))
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
 ;; point-undo
-(when (require 'point-undo nil t)
-  (global-set-key (kbd "M-[") 'point-undo)
-  (global-set-key (kbd "M-]") 'point-redo))
-
+(use-package point-undo
+  :bind (("M-[" . point-undo)
+		 ("M-]" . point-redo)))
 
 
 ;; ------------------------------------------------------------------------
