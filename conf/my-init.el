@@ -598,12 +598,6 @@
 ;(initchart-record-execution-time-of require feature)
 
 
-(setq load-path
-      (append '(
-                "~/.emacs.d/conf"
-                ) load-path))
-
-
 
 ;; ------------------------------------------------------------------------
 ;; キーバインド
@@ -735,6 +729,7 @@
 
 (setq org-user-agenda-files (quote ("~/git/org")))
 
+;; org-modeの設定諸々
 ;; http://doc.norang.ca/org-mode.html
 (load "org-mode")
 
