@@ -650,6 +650,47 @@
 (display-time-mode t)
 
 
+;; ------------------------------------------------------------------------
+;; Window操作
+;; ------------------------------------------------------------------------
+; https://miyazakikenji.wordpress.com/2013/05/25/emacs-%E3%81%AE-%E3%82%A6%E3%82%A3%E3%83%B3%E3%83%89%E3%82%A6%E7%AE%A1%E7%90%86/
+;「C-t」自動的に2つに分割するか、他のウィンドウに移動
+;「C-x !」一つのファイル 2 つのウィンドウに表示
+;「C-x @」3 つのウィンドウに横で分ける。
+;「C-x #」3つのウィンドウに縦で分ける。
+;「!@#」はそれぞれ英語キーボードで「123」の上にある記号、
+; 日本語キーボードの場合は適当に配置しなおせばよい。
+(defun split-window-vertically-n (num_wins)
+  (interactive "p")
+  (if (= num_wins 2)
+      (split-window-vertically)
+    (progn
+      (split-window-vertically
+       (- (window-height) (/ (window-height) num_wins)))
+      (split-window-vertically-n (- num_wins 1)))))
+(defun split-window-horizontally-n (num_wins)
+  (interactive "p")
+  (if (= num_wins 2)
+      (split-window-horizontally)
+    (progn
+      (split-window-horizontally
+       (- (window-width) (/ (window-width) num_wins)))
+      (split-window-horizontally-n (- num_wins 1)))))
+(defun other-window-or-split ()
+  (interactive)
+  (when (one-window-p)
+    (if (>= (window-body-width) 270)
+        (split-window-horizontally-n 3)
+      (split-window-horizontally)))
+  (other-window 1))
+(global-set-key "\C-t" 'other-window-or-split)
+(global-set-key "\C-x!" 'follow-delete-other-windows-and-split)
+(global-set-key "\C-x@" '(lambda ()
+                           (interactive)
+                           (split-window-vertically-n 3)))
+(global-set-key "\C-x#" '(lambda ()
+                           (interactive)
+                           (split-window-horizontally-n 3)))
 
 ;; ------------------------------------------------------------------------
 ;; undo、redo設定
