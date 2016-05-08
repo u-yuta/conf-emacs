@@ -674,41 +674,48 @@
 ;; その他機能
 ;; ------------------------------------------------------------------------
 
+;; open recent files
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 400)
+  (setq recentf-exclude '(".recentf"))
+  (setq recentf-auto-cleanup 10)
+  (setq recentf-auto-save-timer
+        (run-with-idle-timer 30 t 'recentf-save-list))
+  (defun recentf-ido-find-file ()
+	"Find a recent file using Ido."
+	(interactive)
+	(let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+	  (when file
+		(find-file file))))
+  (recentf-mode 1)
+  :bind
+  ("C-x C-r" . recentf-ido-find-file))
+
 ;; ido-mode ファイル選択
-(ido-mode t)
-(require 'ido)
-(setq ido-enable-flex-matching t)
-(when (fboundp 'ido-vertical-mode)
-  (ido-vertical-mode 1))
-; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
-(setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
+(use-package ido
+  :init
+  (ido-mode t)
+  :config
+  (setq ido-enable-flex-matching t)
+  (when (fboundp 'ido-vertical-mode)
+	(ido-vertical-mode 1))
+  ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
+  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
 
 ;; cua-modeの設定 (矩形選択)
 (cua-mode t) ; cua-modeをオン
 (setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
 
-;; open recent files
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 100)
-(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-(defun recentf-ido-find-file ()
-  "Find a recent file using Ido."
-  (interactive)
-  (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-    (when file
-      (find-file file))))
-(global-set-key "\C-x\ \C-r" 'recentf-ido-find-file)
 
 ;; company-mode (自動補完)
-(require 'company)
-(global-company-mode) ; 全バッファで有効にする 
-(setq company-idle-delay 0) ; デフォルトは0.5
-(setq company-minimum-prefix-length 2) ; デフォルトは4
-(setq company-selection-wrap-around t) ; 候補の一番下でさらに下に行こうとすると一番上に戻る
-
-(company-quickhelp-mode 1)
+(use-package company
+  :config
+  (global-company-mode) ; 全バッファで有効にする 
+  (setq company-idle-delay 0) ; デフォルトは0.5
+  (setq company-minimum-prefix-length 2) ; デフォルトは4
+  (setq company-selection-wrap-around t)
+  (company-quickhelp-mode 1))
 
 
 ;; dmacro.el
