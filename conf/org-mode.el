@@ -1582,41 +1582,41 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 (setq org-clock-sound "/usr/local/lib/tngchime.wav")
 
-; Enable habit tracking (and a bunch of other modules)
-(setq org-modules (quote (org-bbdb
-                          org-bibtex
-                          org-crypt
-                          org-gnus
-                          org-id
-                          org-info
-                          org-jsinfo
-                          org-habit
-                          org-inlinetask
-                          org-irc
-                          org-mew
-                          org-mhe
-                          org-protocol
-                          org-rmail
-                          org-vm
-                          org-wl
-                          org-w3m)))
-
-; position the habit graph on the agenda to the right of the default
-(setq org-habit-graph-column 50)
-
-(run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
-
+;; Enable habit tracking (and a bunch of other modules)
+;(setq org-modules (quote (org-bbdb
+;                          org-bibtex
+;                          org-crypt
+;                          org-gnus
+;                          org-id
+;                          org-info
+;                          org-jsinfo
+;                          org-habit
+;                          org-inlinetask
+;                          org-irc
+;                          org-mew
+;                          org-mhe
+;                          org-protocol
+;                          org-rmail
+;                          org-vm
+;                          org-wl
+;                          org-w3m)))
+; 
+;; position the habit graph on the agenda to the right of the default
+;(setq org-habit-graph-column 50)
+ 
+;(run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
+ 
 (global-auto-revert-mode t)
-
-(require 'org-crypt)
-; Encrypt all entries before saving
-(org-crypt-use-before-save-magic)
-(setq org-tags-exclude-from-inheritance (quote ("crypt")))
-; GPG key to use for encryption
-(setq org-crypt-key "F0B66B40")
-
-(setq org-crypt-disable-auto-save nil)
-
+ 
+;(require 'org-crypt)
+;; Encrypt all entries before saving
+;(org-crypt-use-before-save-magic)
+;(setq org-tags-exclude-from-inheritance (quote ("crypt")))
+;; GPG key to use for encryption
+;(setq org-crypt-key "F0B66B40")
+; 
+;(setq org-crypt-disable-auto-save nil)
+; 
 (setq org-use-speed-commands t)
 (setq org-speed-commands-user (quote (("0" . ignore)
                                       ("1" . ignore)
@@ -1628,7 +1628,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
                                       ("7" . ignore)
                                       ("8" . ignore)
                                       ("9" . ignore)
-
+ 
                                       ("a" . ignore)
                                       ("d" . ignore)
                                       ("h" . bh/hide-other)
@@ -1645,7 +1645,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
                                       ("x" . ignore)
                                       ("y" . ignore)
                                       ("z" . org-add-note)
-
+ 
                                       ("A" . ignore)
                                       ("B" . ignore)
                                       ("E" . ignore)
@@ -1668,49 +1668,49 @@ Late deadlines first, then scheduled, then non-late deadlines"
                                       ("X" . ignore)
                                       ("Y" . ignore)
                                       ("Z" . ignore))))
-
+ 
 (defun bh/show-org-agenda ()
   (interactive)
   (if org-agenda-sticky
       (switch-to-buffer "*Org Agenda( )*")
     (switch-to-buffer "*Org Agenda*"))
   (delete-other-windows))
-
+ 
 (require 'org-protocol)
-
+ 
 (setq require-final-newline t)
-
+ 
 (defvar bh/insert-inactive-timestamp t)
-
+ 
 (defun bh/toggle-insert-inactive-timestamp ()
   (interactive)
   (setq bh/insert-inactive-timestamp (not bh/insert-inactive-timestamp))
   (message "Heading timestamps are %s" (if bh/insert-inactive-timestamp "ON" "OFF")))
-
+ 
 (defun bh/insert-inactive-timestamp ()
   (interactive)
   (org-insert-time-stamp nil t t nil nil nil))
-
+ 
 (defun bh/insert-heading-inactive-timestamp ()
   (save-excursion
     (when bh/insert-inactive-timestamp
       (org-return)
       (org-cycle)
       (bh/insert-inactive-timestamp))))
-
+ 
 (add-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp 'append)
-
+ 
 (setq org-export-with-timestamps nil)
-
+ 
 (setq org-return-follows-link t)
-
+ 
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(org-mode-line-clock ((t (:foreground "red" :box (:line-width -1 :style released-button)))) t))
-
+ 
 (defun bh/prepare-meeting-notes ()
   "Prepare meeting notes for email
    Take selected region and convert tabs to spaces, mark TODOs with leading >>>, and copy to kill ring for pasting"
@@ -1725,13 +1725,13 @@ Late deadlines first, then scheduled, then non-late deadlines"
           (replace-match (concat (make-string (length (match-string 1)) ?>) " " (match-string 2) ": ")))
         (goto-char (point-min))
         (kill-ring-save (point-min) (point-max))))))
-
+ 
 (setq org-remove-highlights-with-change t)
-
-(add-to-list 'Info-default-directory-list "~/git/org-mode/doc")
-
+ 
+;(add-to-list 'Info-default-directory-list "~/git/org-mode/doc")
+ 
 (setq org-read-date-prefer-future 'time)
-
+ 
 (setq org-list-demote-modify-bullet (quote (("+" . "-")
                                             ("*" . "-")
                                             ("1." . "-")
@@ -1744,89 +1744,89 @@ Late deadlines first, then scheduled, then non-late deadlines"
                                             ("B." . "-")
                                             ("a." . "-")
                                             ("b." . "-"))))
-
+ 
 (setq org-tags-match-list-sublevels t)
-
+ 
 (setq org-agenda-persistent-filter t)
-
-(setq org-link-mailto-program (quote (compose-mail "%a" "%s")))
-
-; (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
-(require 'smex)
-(smex-initialize)
-
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "C-x x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-
-;; Bookmark handling
-;;
-(global-set-key (kbd "<C-f6>") '(lambda () (interactive) (bookmark-set "SAVED")))
-(global-set-key (kbd "<f6>") '(lambda () (interactive) (bookmark-jump "SAVED")))
-
-(require 'org-mime)
-
-(setq org-agenda-skip-additional-timestamps-same-entry t)
-
-(setq org-table-use-standard-references (quote from))
-
-(setq org-file-apps (quote ((auto-mode . emacs)
-                            ("\\.mm\\'" . system)
-                            ("\\.x?html?\\'" . system)
-                            ("\\.pdf\\'" . system))))
-
-; Overwrite the current window with the agenda
-(setq org-agenda-window-setup 'current-window)
-
-(setq org-clone-delete-id t)
-
-(setq org-cycle-include-plain-lists t)
-
-(setq org-src-fontify-natively t)
-
-(setq org-structure-template-alist
-      (quote (("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
-              ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
-              ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
-              ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n</verse>")
-              ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n</center>")
-              ("l" "#+begin_latex\n?\n#+end_latex" "<literal style=\"latex\">\n?\n</literal>")
-              ("L" "#+latex: " "<literal style=\"latex\">?</literal>")
-              ("h" "#+begin_html\n?\n#+end_html" "<literal style=\"html\">\n?\n</literal>")
-              ("H" "#+html: " "<literal style=\"html\">?</literal>")
-              ("a" "#+begin_ascii\n?\n#+end_ascii")
-              ("A" "#+ascii: ")
-              ("i" "#+index: ?" "#+index: ?")
-              ("I" "#+include %file ?" "<include file=%file markup=\"?\">"))))
-
-(defun bh/mark-next-parent-tasks-todo ()
-  "Visit each parent task and change NEXT states to TODO"
-  (let ((mystate (or (and (fboundp 'org-state)
-                          state)
-                     (nth 2 (org-heading-components)))))
-    (when mystate
-      (save-excursion
-        (while (org-up-heading-safe)
-          (when (member (nth 2 (org-heading-components)) (list "NEXT"))
-            (org-todo "TODO")))))))
-
+ 
+;(setq org-link-mailto-program (quote (compose-mail "%a" "%s")))
+; 
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
+;(require 'smex)
+;(smex-initialize)
+; 
+;(global-set-key (kbd "M-x") 'smex)
+;(global-set-key (kbd "C-x x") 'smex)
+;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+; 
+;;; Bookmark handling
+;;;
+;(global-set-key (kbd "<C-f6>") '(lambda () (interactive) (bookmark-set "SAVED")))
+;(global-set-key (kbd "<f6>") '(lambda () (interactive) (bookmark-jump "SAVED")))
+; 
+;(require 'org-mime)
+; 
+;(setq org-agenda-skip-additional-timestamps-same-entry t)
+; 
+;(setq org-table-use-standard-references (quote from))
+; 
+;(setq org-file-apps (quote ((auto-mode . emacs)
+;                            ("\\.mm\\'" . system)
+;                            ("\\.x?html?\\'" . system)
+;                            ("\\.pdf\\'" . system))))
+; 
+;; Overwrite the current window with the agenda
+;(setq org-agenda-window-setup 'current-window)
+; 
+;(setq org-clone-delete-id t)
+; 
+;(setq org-cycle-include-plain-lists t)
+; 
+;(setq org-src-fontify-natively t)
+; 
+;(setq org-structure-template-alist
+;      (quote (("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
+;              ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
+;              ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
+;              ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n</verse>")
+;              ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n</center>")
+;              ("l" "#+begin_latex\n?\n#+end_latex" "<literal style=\"latex\">\n?\n</literal>")
+;              ("L" "#+latex: " "<literal style=\"latex\">?</literal>")
+;              ("h" "#+begin_html\n?\n#+end_html" "<literal style=\"html\">\n?\n</literal>")
+;              ("H" "#+html: " "<literal style=\"html\">?</literal>")
+;              ("a" "#+begin_ascii\n?\n#+end_ascii")
+;              ("A" "#+ascii: ")
+;              ("i" "#+index: ?" "#+index: ?")
+;              ("I" "#+include %file ?" "<include file=%file markup=\"?\">"))))
+; 
+;(defun bh/mark-next-parent-tasks-todo ()
+;  "Visit each parent task and change NEXT states to TODO"
+;  (let ((mystate (or (and (fboundp 'org-state)
+;                          state)
+;                     (nth 2 (org-heading-components)))))
+;    (when mystate
+;      (save-excursion
+;        (while (org-up-heading-safe)
+;          (when (member (nth 2 (org-heading-components)) (list "NEXT"))
+;            (org-todo "TODO")))))))
+; 
 (add-hook 'org-after-todo-state-change-hook 'bh/mark-next-parent-tasks-todo 'append)
 (add-hook 'org-clock-in-hook 'bh/mark-next-parent-tasks-todo 'append)
-
+ 
 (setq org-startup-folded t)
-
-(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
-(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
-(add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
-(add-hook 'message-mode-hook 'orgtbl-mode 'append)
-(add-hook 'message-mode-hook 'turn-on-flyspell 'append)
-(add-hook 'message-mode-hook
-          '(lambda () (setq fill-column 72))
-          'append)
-
-;; flyspell mode for spell checking everywhere
-(add-hook 'org-mode-hook 'turn-on-flyspell 'append)
-
+ 
+;(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
+;(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
+;(add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
+;(add-hook 'message-mode-hook 'orgtbl-mode 'append)
+;(add-hook 'message-mode-hook 'turn-on-flyspell 'append)
+;(add-hook 'message-mode-hook
+;          '(lambda () (setq fill-column 72))
+;          'append)
+; 
+;;; flyspell mode for spell checking everywhere
+;(add-hook 'org-mode-hook 'turn-on-flyspell 'append)
+; 
 ;; Disable keys in org-mode
 ;;    C-c [ 
 ;;    C-c ]
@@ -1842,40 +1842,40 @@ Late deadlines first, then scheduled, then non-late deadlines"
              (org-defkey org-mode-map "\C-c;" 'undefined)
              (org-defkey org-mode-map "\C-c\C-x\C-q" 'undefined))
           'append)
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-c M-o") 'bh/mail-subtree))
-          'append)
-
-(defun bh/mail-subtree ()
-  (interactive)
-  (org-mark-subtree)
-  (org-mime-subtree))
-
+ 
+;(add-hook 'org-mode-hook
+;          (lambda ()
+;            (local-set-key (kbd "C-c M-o") 'bh/mail-subtree))
+;          'append)
+; 
+;(defun bh/mail-subtree ()
+;  (interactive)
+;  (org-mark-subtree)
+;  (org-mime-subtree))
+ 
 (setq org-src-preserve-indentation nil)
 (setq org-edit-src-content-indentation 0)
-
+ 
 (setq org-catch-invisible-edits 'error)
-
-(setq org-export-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-(set-charset-priority 'unicode)
-(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
-
+ 
+;(setq org-export-coding-system 'utf-8)
+;(prefer-coding-system 'utf-8)
+;(set-charset-priority 'unicode)
+;(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+; 
 (setq org-time-clocksum-format
       '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t))
-
+ 
 (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
-
+ 
 (setq org-emphasis-alist (quote (("*" bold "<b>" "</b>")
                                  ("/" italic "<i>" "</i>")
                                  ("_" underline "<span style=\"text-decoration:underline;\">" "</span>")
                                  ("=" org-code "<code>" "</code>" verbatim)
                                  ("~" org-verbatim "<code>" "</code>" verbatim))))
-
+ 
 (setq org-use-sub-superscripts nil)
-
+ 
 (setq org-odd-levels-only nil)
-
+ 
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)

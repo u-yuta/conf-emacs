@@ -761,7 +761,7 @@
 
 ;; dmacro.el
 ;; Dynamic macro
-(defconst *dmacro-key* "\C-t" "繰返し指定キー")
+(defconst *dmacro-key* "\M-t" "繰返し指定キー")
 (global-set-key *dmacro-key* 'dmacro-exec)
 (autoload 'dmacro-exec "dmacro" nil t)
 
@@ -780,7 +780,7 @@
 
 ;; org-modeの設定諸々
 ;; http://doc.norang.ca/org-mode.html
-(load "org-mode")
+;(load "org-mode")
 
 ;; 必要な設定を以下にて上書きする（不要かも）
 (setq org-directory "~/git/org")
