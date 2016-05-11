@@ -780,7 +780,7 @@
 
 ;; org-modeの設定諸々
 ;; http://doc.norang.ca/org-mode.html
-;(load "org-mode")
+(load "org-mode")
 
 ;; 必要な設定を以下にて上書きする（不要かも）
 (setq org-directory "~/git/org")

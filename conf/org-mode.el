@@ -859,162 +859,162 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ; doc          - http://doc.norang.ca/
 ; org-mode-doc - http://doc.norang.ca/org-mode.html and associated files
 ; org          - miscellaneous todo lists for publishing
-(setq org-publish-project-alist
-      ;
-      ; http://www.norang.ca/  (norang website)
-      ; norang-org are the org-files that generate the content
-      ; norang-extra are images and css files that need to be included
-      ; norang is the top-level project that gets published
-      (quote (("norang-org"
-               :base-directory "~/git/www.norang.ca"
-               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs"
-               :recursive t
-               :table-of-contents nil
-               :base-extension "org"
-               :publishing-function org-html-publish-to-html
-               :style-include-default nil
-               :section-numbers nil
-               :table-of-contents nil
-               :html-head "<link rel=\"stylesheet\" href=\"norang.css\" type=\"text/css\" />"
-               :author-info nil
-               :creator-info nil)
-              ("norang-extra"
-               :base-directory "~/git/www.norang.ca/"
-               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs"
-               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
-               :publishing-function org-publish-attachment
-               :recursive t
-               :author nil)
-              ("norang"
-               :components ("norang-org" "norang-extra"))
-              ;
-              ; http://doc.norang.ca/  (norang website)
-              ; doc-org are the org-files that generate the content
-              ; doc-extra are images and css files that need to be included
-              ; doc is the top-level project that gets published
-              ("doc-org"
-               :base-directory "~/git/doc.norang.ca/"
-               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
-               :recursive nil
-               :section-numbers nil
-               :table-of-contents nil
-               :base-extension "org"
-               :publishing-function (org-html-publish-to-html org-org-publish-to-org)
-               :style-include-default nil
-               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
-               :author-info nil
-               :creator-info nil)
-              ("doc-extra"
-               :base-directory "~/git/doc.norang.ca/"
-               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
-               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
-               :publishing-function org-publish-attachment
-               :recursive nil
-               :author nil)
-              ("doc"
-               :components ("doc-org" "doc-extra"))
-              ("doc-private-org"
-               :base-directory "~/git/doc.norang.ca/private"
-               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs/private"
-               :recursive nil
-               :section-numbers nil
-               :table-of-contents nil
-               :base-extension "org"
-               :publishing-function (org-html-publish-to-html org-org-publish-to-org)
-               :style-include-default nil
-               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
-               :auto-sitemap t
-               :sitemap-filename "index.html"
-               :sitemap-title "Norang Private Documents"
-               :sitemap-style "tree"
-               :author-info nil
-               :creator-info nil)
-              ("doc-private-extra"
-               :base-directory "~/git/doc.norang.ca/private"
-               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs/private"
-               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
-               :publishing-function org-publish-attachment
-               :recursive nil
-               :author nil)
-              ("doc-private"
-               :components ("doc-private-org" "doc-private-extra"))
-              ;
-              ; Miscellaneous pages for other websites
-              ; org are the org-files that generate the content
-              ("org-org"
-               :base-directory "~/git/org/"
-               :publishing-directory "/ssh:www-data@www:~/org"
-               :recursive t
-               :section-numbers nil
-               :table-of-contents nil
-               :base-extension "org"
-               :publishing-function org-html-publish-to-html
-               :style-include-default nil
-               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
-               :author-info nil
-               :creator-info nil)
-              ;
-              ; http://doc.norang.ca/  (norang website)
-              ; org-mode-doc-org this document
-              ; org-mode-doc-extra are images and css files that need to be included
-              ; org-mode-doc is the top-level project that gets published
-              ; This uses the same target directory as the 'doc' project
-              ("org-mode-doc-org"
-               :base-directory "~/git/org-mode-doc/"
-               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
-               :recursive t
-               :section-numbers nil
-               :table-of-contents nil
-               :base-extension "org"
-               :publishing-function (org-html-publish-to-html)
-               :plain-source t
-               :htmlized-source t
-               :style-include-default nil
-               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
-               :author-info nil
-               :creator-info nil)
-              ("org-mode-doc-extra"
-               :base-directory "~/git/org-mode-doc/"
-               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
-               :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|org"
-               :publishing-function org-publish-attachment
-               :recursive t
-               :author nil)
-              ("org-mode-doc"
-               :components ("org-mode-doc-org" "org-mode-doc-extra"))
-              ;
-              ; http://doc.norang.ca/  (norang website)
-              ; org-mode-doc-org this document
-              ; org-mode-doc-extra are images and css files that need to be included
-              ; org-mode-doc is the top-level project that gets published
-              ; This uses the same target directory as the 'doc' project
-              ("tmp-org"
-               :base-directory "/tmp/publish/"
-               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs/tmp"
-               :recursive t
-               :section-numbers nil
-               :table-of-contents nil
-               :base-extension "org"
-               :publishing-function (org-html-publish-to-html org-org-publish-to-org)
-               :html-head "<link rel=\"stylesheet\" href=\"http://doc.norang.ca/org.css\" type=\"text/css\" />"
-               :plain-source t
-               :htmlized-source t
-               :style-include-default nil
-               :auto-sitemap t
-               :sitemap-filename "index.html"
-               :sitemap-title "Test Publishing Area"
-               :sitemap-style "tree"
-               :author-info t
-               :creator-info t)
-              ("tmp-extra"
-               :base-directory "/tmp/publish/"
-               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs/tmp"
-               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
-               :publishing-function org-publish-attachment
-               :recursive t
-               :author nil)
-              ("tmp"
-               :components ("tmp-org" "tmp-extra")))))
+;(setq org-publish-project-alist
+;      ;
+;      ; http://www.norang.ca/  (norang website)
+;      ; norang-org are the org-files that generate the content
+;      ; norang-extra are images and css files that need to be included
+;      ; norang is the top-level project that gets published
+;      (quote (("norang-org"
+;               :base-directory "~/git/www.norang.ca"
+;               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs"
+;               :recursive t
+;               :table-of-contents nil
+;               :base-extension "org"
+;               :publishing-function org-html-publish-to-html
+;               :style-include-default nil
+;               :section-numbers nil
+;               :table-of-contents nil
+;               :html-head "<link rel=\"stylesheet\" href=\"norang.css\" type=\"text/css\" />"
+;               :author-info nil
+;               :creator-info nil)
+;              ("norang-extra"
+;               :base-directory "~/git/www.norang.ca/"
+;               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs"
+;               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
+;               :publishing-function org-publish-attachment
+;               :recursive t
+;               :author nil)
+;              ("norang"
+;               :components ("norang-org" "norang-extra"))
+;              ;
+;              ; http://doc.norang.ca/  (norang website)
+;              ; doc-org are the org-files that generate the content
+;              ; doc-extra are images and css files that need to be included
+;              ; doc is the top-level project that gets published
+;              ("doc-org"
+;               :base-directory "~/git/doc.norang.ca/"
+;               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
+;               :recursive nil
+;               :section-numbers nil
+;               :table-of-contents nil
+;               :base-extension "org"
+;               :publishing-function (org-html-publish-to-html org-org-publish-to-org)
+;               :style-include-default nil
+;               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
+;               :author-info nil
+;               :creator-info nil)
+;              ("doc-extra"
+;               :base-directory "~/git/doc.norang.ca/"
+;               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
+;               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
+;               :publishing-function org-publish-attachment
+;               :recursive nil
+;               :author nil)
+;              ("doc"
+;               :components ("doc-org" "doc-extra"))
+;              ("doc-private-org"
+;               :base-directory "~/git/doc.norang.ca/private"
+;               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs/private"
+;               :recursive nil
+;               :section-numbers nil
+;               :table-of-contents nil
+;               :base-extension "org"
+;               :publishing-function (org-html-publish-to-html org-org-publish-to-org)
+;               :style-include-default nil
+;               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
+;               :auto-sitemap t
+;               :sitemap-filename "index.html"
+;               :sitemap-title "Norang Private Documents"
+;               :sitemap-style "tree"
+;               :author-info nil
+;               :creator-info nil)
+;              ("doc-private-extra"
+;               :base-directory "~/git/doc.norang.ca/private"
+;               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs/private"
+;               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
+;               :publishing-function org-publish-attachment
+;               :recursive nil
+;               :author nil)
+;              ("doc-private"
+;               :components ("doc-private-org" "doc-private-extra"))
+;              ;
+;              ; Miscellaneous pages for other websites
+;              ; org are the org-files that generate the content
+;              ("org-org"
+;               :base-directory "~/git/org/"
+;               :publishing-directory "/ssh:www-data@www:~/org"
+;               :recursive t
+;               :section-numbers nil
+;               :table-of-contents nil
+;               :base-extension "org"
+;               :publishing-function org-html-publish-to-html
+;               :style-include-default nil
+;               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
+;               :author-info nil
+;               :creator-info nil)
+;              ;
+;              ; http://doc.norang.ca/  (norang website)
+;              ; org-mode-doc-org this document
+;              ; org-mode-doc-extra are images and css files that need to be included
+;              ; org-mode-doc is the top-level project that gets published
+;              ; This uses the same target directory as the 'doc' project
+;              ("org-mode-doc-org"
+;               :base-directory "~/git/org-mode-doc/"
+;               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
+;               :recursive t
+;               :section-numbers nil
+;               :table-of-contents nil
+;               :base-extension "org"
+;               :publishing-function (org-html-publish-to-html)
+;               :plain-source t
+;               :htmlized-source t
+;               :style-include-default nil
+;               :html-head "<link rel=\"stylesheet\" href=\"/org.css\" type=\"text/css\" />"
+;               :author-info nil
+;               :creator-info nil)
+;              ("org-mode-doc-extra"
+;               :base-directory "~/git/org-mode-doc/"
+;               :publishing-directory "/ssh:www-data@www:~/doc.norang.ca/htdocs"
+;               :base-extension "css\\|pdf\\|png\\|jpg\\|gif\\|org"
+;               :publishing-function org-publish-attachment
+;               :recursive t
+;               :author nil)
+;              ("org-mode-doc"
+;               :components ("org-mode-doc-org" "org-mode-doc-extra"))
+;              ;
+;              ; http://doc.norang.ca/  (norang website)
+;              ; org-mode-doc-org this document
+;              ; org-mode-doc-extra are images and css files that need to be included
+;              ; org-mode-doc is the top-level project that gets published
+;              ; This uses the same target directory as the 'doc' project
+;              ("tmp-org"
+;               :base-directory "/tmp/publish/"
+;               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs/tmp"
+;               :recursive t
+;               :section-numbers nil
+;               :table-of-contents nil
+;               :base-extension "org"
+;               :publishing-function (org-html-publish-to-html org-org-publish-to-org)
+;               :html-head "<link rel=\"stylesheet\" href=\"http://doc.norang.ca/org.css\" type=\"text/css\" />"
+;               :plain-source t
+;               :htmlized-source t
+;               :style-include-default nil
+;               :auto-sitemap t
+;               :sitemap-filename "index.html"
+;               :sitemap-title "Test Publishing Area"
+;               :sitemap-style "tree"
+;               :author-info t
+;               :creator-info t)
+;              ("tmp-extra"
+;               :base-directory "/tmp/publish/"
+;               :publishing-directory "/ssh:www-data@www:~/www.norang.ca/htdocs/tmp"
+;               :base-extension "css\\|pdf\\|png\\|jpg\\|gif"
+;               :publishing-function org-publish-attachment
+;               :recursive t
+;               :author nil)
+;              ("tmp"
+;               :components ("tmp-org" "tmp-extra")))))
 
 ; I'm lazy and don't want to remember the name of the project to publish when I modify
 ; a file that is part of a project.  So this function saves the file, and publishes
@@ -1528,61 +1528,61 @@ Late deadlines first, then scheduled, then non-late deadlines"
   (string-match "Sched\.\\(.*\\)x:" date-str))
 
 ;; Use sticky agenda's so they persist
-(setq org-agenda-sticky t)
+;(setq org-agenda-sticky t)
 
 ;; The following setting is different from the document so that you
 ;; can override the document path by setting your path in the variable
 ;; org-mode-user-contrib-lisp-path
 ;;
-(if (boundp 'org-mode-user-contrib-lisp-path)
-    (add-to-list 'load-path org-mode-user-contrib-lisp-path)
-  (add-to-list 'load-path (expand-file-name "~/git/org-mode/contrib/lisp")))
+;(if (boundp 'org-mode-user-contrib-lisp-path)
+;    (add-to-list 'load-path org-mode-user-contrib-lisp-path)
+;  (add-to-list 'load-path (expand-file-name "~/git/org-mode/contrib/lisp")))
+; 
+;(require 'org-checklist)
+; 
+;(setq org-enforce-todo-dependencies t)
+; 
+;(setq org-hide-leading-stars nil)
+; 
+;(setq org-startup-indented t)
+; 
+;(setq org-cycle-separator-lines 0)
+; 
+;(setq org-blank-before-new-entry (quote ((heading)
+;                                         (plain-list-item . auto))))
+; 
+;(setq org-insert-heading-respect-content nil)
+; 
+;(setq org-reverse-note-order nil)
+; 
+;(setq org-show-following-heading t)
+;(setq org-show-hierarchy-above t)
+;(setq org-show-siblings (quote ((default))))
+; 
+;(setq org-special-ctrl-a/e t)
+;(setq org-special-ctrl-k t)
+;(setq org-yank-adjusted-subtrees t)
+; 
+;(setq org-id-method (quote uuidgen))
+; 
+;(setq org-deadline-warning-days 30)
+; 
+;(setq org-table-export-default-format "orgtbl-to-csv")
+; 
+;(setq org-link-frame-setup (quote ((vm . vm-visit-folder)
+;                                   (gnus . org-gnus-no-new-news)
+;                                   (file . find-file))))
+; 
+;; Use the current window for C-c ' source editing
+;(setq org-src-window-setup 'current-window)
+; 
+;(setq org-log-done (quote time))
+;(setq org-log-into-drawer t)
+;(setq org-log-state-notes-insert-after-drawers nil)
+; 
+;(setq org-clock-sound "/usr/local/lib/tngchime.wav")
 
-(require 'org-checklist)
-
-(setq org-enforce-todo-dependencies t)
-
-(setq org-hide-leading-stars nil)
-
-(setq org-startup-indented t)
-
-(setq org-cycle-separator-lines 0)
-
-(setq org-blank-before-new-entry (quote ((heading)
-                                         (plain-list-item . auto))))
-
-(setq org-insert-heading-respect-content nil)
-
-(setq org-reverse-note-order nil)
-
-(setq org-show-following-heading t)
-(setq org-show-hierarchy-above t)
-(setq org-show-siblings (quote ((default))))
-
-(setq org-special-ctrl-a/e t)
-(setq org-special-ctrl-k t)
-(setq org-yank-adjusted-subtrees t)
-
-(setq org-id-method (quote uuidgen))
-
-(setq org-deadline-warning-days 30)
-
-(setq org-table-export-default-format "orgtbl-to-csv")
-
-(setq org-link-frame-setup (quote ((vm . vm-visit-folder)
-                                   (gnus . org-gnus-no-new-news)
-                                   (file . find-file))))
-
-; Use the current window for C-c ' source editing
-(setq org-src-window-setup 'current-window)
-
-(setq org-log-done (quote time))
-(setq org-log-into-drawer t)
-(setq org-log-state-notes-insert-after-drawers nil)
-
-(setq org-clock-sound "/usr/local/lib/tngchime.wav")
-
-;; Enable habit tracking (and a bunch of other modules)
+; Enable habit tracking (and a bunch of other modules)
 ;(setq org-modules (quote (org-bbdb
 ;                          org-bibtex
 ;                          org-crypt
@@ -1600,13 +1600,13 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ;                          org-vm
 ;                          org-wl
 ;                          org-w3m)))
-; 
-;; position the habit graph on the agenda to the right of the default
-;(setq org-habit-graph-column 50)
+ 
+; position the habit graph on the agenda to the right of the default
+(setq org-habit-graph-column 50)
  
 ;(run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
  
-(global-auto-revert-mode t)
+;(global-auto-revert-mode t)
  
 ;(require 'org-crypt)
 ;; Encrypt all entries before saving
@@ -1617,138 +1617,138 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ; 
 ;(setq org-crypt-disable-auto-save nil)
 ; 
-(setq org-use-speed-commands t)
-(setq org-speed-commands-user (quote (("0" . ignore)
-                                      ("1" . ignore)
-                                      ("2" . ignore)
-                                      ("3" . ignore)
-                                      ("4" . ignore)
-                                      ("5" . ignore)
-                                      ("6" . ignore)
-                                      ("7" . ignore)
-                                      ("8" . ignore)
-                                      ("9" . ignore)
- 
-                                      ("a" . ignore)
-                                      ("d" . ignore)
-                                      ("h" . bh/hide-other)
-                                      ("i" progn
-                                       (forward-char 1)
-                                       (call-interactively 'org-insert-heading-respect-content))
-                                      ("k" . org-kill-note-or-show-branches)
-                                      ("l" . ignore)
-                                      ("m" . ignore)
-                                      ("q" . bh/show-org-agenda)
-                                      ("r" . ignore)
-                                      ("s" . org-save-all-org-buffers)
-                                      ("w" . org-refile)
-                                      ("x" . ignore)
-                                      ("y" . ignore)
-                                      ("z" . org-add-note)
- 
-                                      ("A" . ignore)
-                                      ("B" . ignore)
-                                      ("E" . ignore)
-                                      ("F" . bh/restrict-to-file-or-follow)
-                                      ("G" . ignore)
-                                      ("H" . ignore)
-                                      ("J" . org-clock-goto)
-                                      ("K" . ignore)
-                                      ("L" . ignore)
-                                      ("M" . ignore)
-                                      ("N" . bh/narrow-to-org-subtree)
-                                      ("P" . bh/narrow-to-org-project)
-                                      ("Q" . ignore)
-                                      ("R" . ignore)
-                                      ("S" . ignore)
-                                      ("T" . bh/org-todo)
-                                      ("U" . bh/narrow-up-one-org-level)
-                                      ("V" . ignore)
-                                      ("W" . bh/widen)
-                                      ("X" . ignore)
-                                      ("Y" . ignore)
-                                      ("Z" . ignore))))
- 
-(defun bh/show-org-agenda ()
-  (interactive)
-  (if org-agenda-sticky
-      (switch-to-buffer "*Org Agenda( )*")
-    (switch-to-buffer "*Org Agenda*"))
-  (delete-other-windows))
- 
-(require 'org-protocol)
- 
-(setq require-final-newline t)
- 
-(defvar bh/insert-inactive-timestamp t)
- 
-(defun bh/toggle-insert-inactive-timestamp ()
-  (interactive)
-  (setq bh/insert-inactive-timestamp (not bh/insert-inactive-timestamp))
-  (message "Heading timestamps are %s" (if bh/insert-inactive-timestamp "ON" "OFF")))
- 
-(defun bh/insert-inactive-timestamp ()
-  (interactive)
-  (org-insert-time-stamp nil t t nil nil nil))
- 
-(defun bh/insert-heading-inactive-timestamp ()
-  (save-excursion
-    (when bh/insert-inactive-timestamp
-      (org-return)
-      (org-cycle)
-      (bh/insert-inactive-timestamp))))
- 
-(add-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp 'append)
- 
-(setq org-export-with-timestamps nil)
- 
-(setq org-return-follows-link t)
- 
-(custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(org-mode-line-clock ((t (:foreground "red" :box (:line-width -1 :style released-button)))) t))
- 
-(defun bh/prepare-meeting-notes ()
-  "Prepare meeting notes for email
-   Take selected region and convert tabs to spaces, mark TODOs with leading >>>, and copy to kill ring for pasting"
-  (interactive)
-  (let (prefix)
-    (save-excursion
-      (save-restriction
-        (narrow-to-region (region-beginning) (region-end))
-        (untabify (point-min) (point-max))
-        (goto-char (point-min))
-        (while (re-search-forward "^\\( *-\\\) \\(TODO\\|DONE\\): " (point-max) t)
-          (replace-match (concat (make-string (length (match-string 1)) ?>) " " (match-string 2) ": ")))
-        (goto-char (point-min))
-        (kill-ring-save (point-min) (point-max))))))
- 
-(setq org-remove-highlights-with-change t)
- 
+;(setq org-use-speed-commands t)
+;(setq org-speed-commands-user (quote (("0" . ignore)
+;                                      ("1" . ignore)
+;                                      ("2" . ignore)
+;                                      ("3" . ignore)
+;                                      ("4" . ignore)
+;                                      ("5" . ignore)
+;                                      ("6" . ignore)
+;                                      ("7" . ignore)
+;                                      ("8" . ignore)
+;                                      ("9" . ignore)
+; 
+;                                      ("a" . ignore)
+;                                      ("d" . ignore)
+;                                      ("h" . bh/hide-other)
+;                                      ("i" progn
+;                                       (forward-char 1)
+;                                       (call-interactively 'org-insert-heading-respect-content))
+;                                      ("k" . org-kill-note-or-show-branches)
+;                                      ("l" . ignore)
+;                                      ("m" . ignore)
+;                                      ("q" . bh/show-org-agenda)
+;                                      ("r" . ignore)
+;                                      ("s" . org-save-all-org-buffers)
+;                                      ("w" . org-refile)
+;                                      ("x" . ignore)
+;                                      ("y" . ignore)
+;                                      ("z" . org-add-note)
+; 
+;                                      ("A" . ignore)
+;                                      ("B" . ignore)
+;                                      ("E" . ignore)
+;                                      ("F" . bh/restrict-to-file-or-follow)
+;                                      ("G" . ignore)
+;                                      ("H" . ignore)
+;                                      ("J" . org-clock-goto)
+;                                      ("K" . ignore)
+;                                      ("L" . ignore)
+;                                      ("M" . ignore)
+;                                      ("N" . bh/narrow-to-org-subtree)
+;                                      ("P" . bh/narrow-to-org-project)
+;                                      ("Q" . ignore)
+;                                      ("R" . ignore)
+;                                      ("S" . ignore)
+;                                      ("T" . bh/org-todo)
+;                                      ("U" . bh/narrow-up-one-org-level)
+;                                      ("V" . ignore)
+;                                      ("W" . bh/widen)
+;                                      ("X" . ignore)
+;                                      ("Y" . ignore)
+;                                      ("Z" . ignore))))
+; 
+;(defun bh/show-org-agenda ()
+;  (interactive)
+;  (if org-agenda-sticky
+;      (switch-to-buffer "*Org Agenda( )*")
+;    (switch-to-buffer "*Org Agenda*"))
+;  (delete-other-windows))
+; 
+;(require 'org-protocol)
+; 
+;(setq require-final-newline t)
+; 
+;(defvar bh/insert-inactive-timestamp t)
+; 
+;(defun bh/toggle-insert-inactive-timestamp ()
+;  (interactive)
+;  (setq bh/insert-inactive-timestamp (not bh/insert-inactive-timestamp))
+;  (message "Heading timestamps are %s" (if bh/insert-inactive-timestamp "ON" "OFF")))
+; 
+;(defun bh/insert-inactive-timestamp ()
+;  (interactive)
+;  (org-insert-time-stamp nil t t nil nil nil))
+; 
+;(defun bh/insert-heading-inactive-timestamp ()
+;  (save-excursion
+;    (when bh/insert-inactive-timestamp
+;      (org-return)
+;      (org-cycle)
+;      (bh/insert-inactive-timestamp))))
+; 
+;(add-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp 'append)
+; 
+;(setq org-export-with-timestamps nil)
+; 
+;(setq org-return-follows-link t)
+; 
+;(custom-set-faces
+;  ;; custom-set-faces was added by Custom.
+;  ;; If you edit it by hand, you could mess it up, so be careful.
+;  ;; Your init file should contain only one such instance.
+;  ;; If there is more than one, they won't work right.
+; '(org-mode-line-clock ((t (:foreground "red" :box (:line-width -1 :style released-button)))) t))
+; 
+;(defun bh/prepare-meeting-notes ()
+;  "Prepare meeting notes for email
+;   Take selected region and convert tabs to spaces, mark TODOs with leading >>>, and copy to kill ring for pasting"
+;  (interactive)
+;  (let (prefix)
+;    (save-excursion
+;      (save-restriction
+;        (narrow-to-region (region-beginning) (region-end))
+;        (untabify (point-min) (point-max))
+;        (goto-char (point-min))
+;        (while (re-search-forward "^\\( *-\\\) \\(TODO\\|DONE\\): " (point-max) t)
+;          (replace-match (concat (make-string (length (match-string 1)) ?>) " " (match-string 2) ": ")))
+;        (goto-char (point-min))
+;        (kill-ring-save (point-min) (point-max))))))
+; 
+;(setq org-remove-highlights-with-change t)
+; 
 ;(add-to-list 'Info-default-directory-list "~/git/org-mode/doc")
  
-(setq org-read-date-prefer-future 'time)
- 
-(setq org-list-demote-modify-bullet (quote (("+" . "-")
-                                            ("*" . "-")
-                                            ("1." . "-")
-                                            ("1)" . "-")
-                                            ("A)" . "-")
-                                            ("B)" . "-")
-                                            ("a)" . "-")
-                                            ("b)" . "-")
-                                            ("A." . "-")
-                                            ("B." . "-")
-                                            ("a." . "-")
-                                            ("b." . "-"))))
- 
-(setq org-tags-match-list-sublevels t)
- 
-(setq org-agenda-persistent-filter t)
- 
+;(setq org-read-date-prefer-future 'time)
+; 
+;(setq org-list-demote-modify-bullet (quote (("+" . "-")
+;                                            ("*" . "-")
+;                                            ("1." . "-")
+;                                            ("1)" . "-")
+;                                            ("A)" . "-")
+;                                            ("B)" . "-")
+;                                            ("a)" . "-")
+;                                            ("b)" . "-")
+;                                            ("A." . "-")
+;                                            ("B." . "-")
+;                                            ("a." . "-")
+;                                            ("b." . "-"))))
+; 
+;(setq org-tags-match-list-sublevels t)
+; 
+;(setq org-agenda-persistent-filter t)
+; 
 ;(setq org-link-mailto-program (quote (compose-mail "%a" "%s")))
 ; 
 ;; (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
@@ -1810,11 +1810,11 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ;          (when (member (nth 2 (org-heading-components)) (list "NEXT"))
 ;            (org-todo "TODO")))))))
 ; 
-(add-hook 'org-after-todo-state-change-hook 'bh/mark-next-parent-tasks-todo 'append)
-(add-hook 'org-clock-in-hook 'bh/mark-next-parent-tasks-todo 'append)
- 
-(setq org-startup-folded t)
- 
+;(add-hook 'org-after-todo-state-change-hook 'bh/mark-next-parent-tasks-todo 'append)
+;(add-hook 'org-clock-in-hook 'bh/mark-next-parent-tasks-todo 'append)
+; 
+;(setq org-startup-folded t)
+; 
 ;(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
 ;(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
 ;(add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
