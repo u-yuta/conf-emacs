@@ -1537,34 +1537,34 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ;(if (boundp 'org-mode-user-contrib-lisp-path)
 ;    (add-to-list 'load-path org-mode-user-contrib-lisp-path)
 ;  (add-to-list 'load-path (expand-file-name "~/git/org-mode/contrib/lisp")))
-; 
+ 
 ;(require 'org-checklist)
-; 
-;(setq org-enforce-todo-dependencies t)
-; 
-;(setq org-hide-leading-stars nil)
-; 
-;(setq org-startup-indented t)
-; 
-;(setq org-cycle-separator-lines 0)
-; 
-;(setq org-blank-before-new-entry (quote ((heading)
-;                                         (plain-list-item . auto))))
-; 
-;(setq org-insert-heading-respect-content nil)
-; 
-;(setq org-reverse-note-order nil)
-; 
-;(setq org-show-following-heading t)
-;(setq org-show-hierarchy-above t)
-;(setq org-show-siblings (quote ((default))))
-; 
+ 
+(setq org-enforce-todo-dependencies t)
+ 
+(setq org-hide-leading-stars nil)
+ 
+(setq org-startup-indented t)
+ 
+(setq org-cycle-separator-lines 0)
+ 
+(setq org-blank-before-new-entry (quote ((heading)
+                                         (plain-list-item . auto))))
+ 
+(setq org-insert-heading-respect-content nil)
+ 
+(setq org-reverse-note-order nil)
+ 
+(setq org-show-following-heading t)
+(setq org-show-hierarchy-above t)
+(setq org-show-siblings (quote ((default))))
+ 
 ;(setq org-special-ctrl-a/e t)
 ;(setq org-special-ctrl-k t)
 ;(setq org-yank-adjusted-subtrees t)
-; 
-;(setq org-id-method (quote uuidgen))
-; 
+ 
+(setq org-id-method (quote uuidgen))
+ 
 ;(setq org-deadline-warning-days 30)
 ; 
 ;(setq org-table-export-default-format "orgtbl-to-csv")
@@ -1572,14 +1572,14 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ;(setq org-link-frame-setup (quote ((vm . vm-visit-folder)
 ;                                   (gnus . org-gnus-no-new-news)
 ;                                   (file . find-file))))
-; 
-;; Use the current window for C-c ' source editing
-;(setq org-src-window-setup 'current-window)
-; 
-;(setq org-log-done (quote time))
-;(setq org-log-into-drawer t)
-;(setq org-log-state-notes-insert-after-drawers nil)
-; 
+ 
+; Use the current window for C-c ' source editing
+(setq org-src-window-setup 'current-window)
+ 
+(setq org-log-done (quote time))
+(setq org-log-into-drawer t)
+(setq org-log-state-notes-insert-after-drawers nil)
+ 
 ;(setq org-clock-sound "/usr/local/lib/tngchime.wav")
 
 ; Enable habit tracking (and a bunch of other modules)
