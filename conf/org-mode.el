@@ -1527,8 +1527,8 @@ Late deadlines first, then scheduled, then non-late deadlines"
 (defun bh/is-scheduled-late (date-str)
   (string-match "Sched\.\\(.*\\)x:" date-str))
 
-;; Use sticky agenda's so they persist
-;(setq org-agenda-sticky t)
+; Use sticky agenda's so they persist
+(setq org-agenda-sticky t)
 
 ;; The following setting is different from the document so that you
 ;; can override the document path by setting your path in the variable
@@ -1584,10 +1584,10 @@ Late deadlines first, then scheduled, then non-late deadlines"
 
 ; Enable habit tracking (and a bunch of other modules)
 (setq org-modules (quote (org-bbdb
-;                          org-bibtex
+                          org-bibtex
 ;                          org-crypt
 ;                          org-gnus
-;                          org-id
+                          org-id
 ;                          org-info
 ;                          org-jsinfo
                           org-habit
@@ -1595,7 +1595,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ;                          org-irc
 ;                          org-mew
 ;                          org-mhe
-;                          org-protocol
+                          org-protocol
 ;                          org-rmail
 ;                          org-vm
 ;                          org-wl
@@ -1605,7 +1605,8 @@ Late deadlines first, then scheduled, then non-late deadlines"
 (setq org-habit-graph-column 50)
  
 ;(run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
- 
+
+;; Do NOT turn on, to avoid hang up right after launching Emacs.
 ;(global-auto-revert-mode t)
  
 ;(require 'org-crypt)
@@ -1676,82 +1677,82 @@ Late deadlines first, then scheduled, then non-late deadlines"
     (switch-to-buffer "*Org Agenda*"))
   (delete-other-windows))
  
-;(require 'org-protocol)
-; 
-;(setq require-final-newline t)
-; 
-;(defvar bh/insert-inactive-timestamp t)
-; 
-;(defun bh/toggle-insert-inactive-timestamp ()
-;  (interactive)
-;  (setq bh/insert-inactive-timestamp (not bh/insert-inactive-timestamp))
-;  (message "Heading timestamps are %s" (if bh/insert-inactive-timestamp "ON" "OFF")))
-; 
-;(defun bh/insert-inactive-timestamp ()
-;  (interactive)
-;  (org-insert-time-stamp nil t t nil nil nil))
-; 
-;(defun bh/insert-heading-inactive-timestamp ()
-;  (save-excursion
-;    (when bh/insert-inactive-timestamp
-;      (org-return)
-;      (org-cycle)
-;      (bh/insert-inactive-timestamp))))
-; 
-;(add-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp 'append)
-; 
-;(setq org-export-with-timestamps nil)
-; 
-;(setq org-return-follows-link t)
-; 
-;(custom-set-faces
-;  ;; custom-set-faces was added by Custom.
-;  ;; If you edit it by hand, you could mess it up, so be careful.
-;  ;; Your init file should contain only one such instance.
-;  ;; If there is more than one, they won't work right.
-; '(org-mode-line-clock ((t (:foreground "red" :box (:line-width -1 :style released-button)))) t))
-; 
-;(defun bh/prepare-meeting-notes ()
-;  "Prepare meeting notes for email
-;   Take selected region and convert tabs to spaces, mark TODOs with leading >>>, and copy to kill ring for pasting"
-;  (interactive)
-;  (let (prefix)
-;    (save-excursion
-;      (save-restriction
-;        (narrow-to-region (region-beginning) (region-end))
-;        (untabify (point-min) (point-max))
-;        (goto-char (point-min))
-;        (while (re-search-forward "^\\( *-\\\) \\(TODO\\|DONE\\): " (point-max) t)
-;          (replace-match (concat (make-string (length (match-string 1)) ?>) " " (match-string 2) ": ")))
-;        (goto-char (point-min))
-;        (kill-ring-save (point-min) (point-max))))))
-; 
-;(setq org-remove-highlights-with-change t)
-; 
-;(add-to-list 'Info-default-directory-list "~/git/org-mode/doc")
+(require 'org-protocol)
  
-;(setq org-read-date-prefer-future 'time)
-; 
-;(setq org-list-demote-modify-bullet (quote (("+" . "-")
-;                                            ("*" . "-")
-;                                            ("1." . "-")
-;                                            ("1)" . "-")
-;                                            ("A)" . "-")
-;                                            ("B)" . "-")
-;                                            ("a)" . "-")
-;                                            ("b)" . "-")
-;                                            ("A." . "-")
-;                                            ("B." . "-")
-;                                            ("a." . "-")
-;                                            ("b." . "-"))))
-; 
-;(setq org-tags-match-list-sublevels t)
-; 
-;(setq org-agenda-persistent-filter t)
-; 
-;(setq org-link-mailto-program (quote (compose-mail "%a" "%s")))
-; 
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
+(setq require-final-newline t)
+ 
+(defvar bh/insert-inactive-timestamp t)
+ 
+(defun bh/toggle-insert-inactive-timestamp ()
+  (interactive)
+  (setq bh/insert-inactive-timestamp (not bh/insert-inactive-timestamp))
+  (message "Heading timestamps are %s" (if bh/insert-inactive-timestamp "ON" "OFF")))
+ 
+(defun bh/insert-inactive-timestamp ()
+  (interactive)
+  (org-insert-time-stamp nil t t nil nil nil))
+ 
+(defun bh/insert-heading-inactive-timestamp ()
+  (save-excursion
+    (when bh/insert-inactive-timestamp
+      (org-return)
+      (org-cycle)
+      (bh/insert-inactive-timestamp))))
+ 
+(add-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp 'append)
+ 
+(setq org-export-with-timestamps nil)
+ 
+(setq org-return-follows-link t)
+ 
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(org-mode-line-clock ((t (:foreground "red" :box (:line-width -1 :style released-button)))) t))
+ 
+(defun bh/prepare-meeting-notes ()
+  "Prepare meeting notes for email
+   Take selected region and convert tabs to spaces, mark TODOs with leading >>>, and copy to kill ring for pasting"
+  (interactive)
+  (let (prefix)
+    (save-excursion
+      (save-restriction
+        (narrow-to-region (region-beginning) (region-end))
+        (untabify (point-min) (point-max))
+        (goto-char (point-min))
+        (while (re-search-forward "^\\( *-\\\) \\(TODO\\|DONE\\): " (point-max) t)
+          (replace-match (concat (make-string (length (match-string 1)) ?>) " " (match-string 2) ": ")))
+        (goto-char (point-min))
+        (kill-ring-save (point-min) (point-max))))))
+ 
+(setq org-remove-highlights-with-change t)
+ 
+(add-to-list 'Info-default-directory-list "~/git/org-mode/doc")
+
+(setq org-read-date-prefer-future 'time)
+ 
+(setq org-list-demote-modify-bullet (quote (("+" . "-")
+                                            ("*" . "-")
+                                            ("1." . "-")
+                                            ("1)" . "-")
+                                            ("A)" . "-")
+                                            ("B)" . "-")
+                                            ("a)" . "-")
+                                            ("b)" . "-")
+                                            ("A." . "-")
+                                            ("B." . "-")
+                                            ("a." . "-")
+                                            ("b." . "-"))))
+ 
+(setq org-tags-match-list-sublevels t)
+ 
+(setq org-agenda-persistent-filter t)
+ 
+(setq org-link-mailto-program (quote (compose-mail "%a" "%s")))
+ 
+; (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 ;(require 'smex)
 ;(smex-initialize)
 ; 
@@ -1759,27 +1760,27 @@ Late deadlines first, then scheduled, then non-late deadlines"
 ;(global-set-key (kbd "C-x x") 'smex)
 ;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ; 
-;;; Bookmark handling
-;;;
-;(global-set-key (kbd "<C-f6>") '(lambda () (interactive) (bookmark-set "SAVED")))
-;(global-set-key (kbd "<f6>") '(lambda () (interactive) (bookmark-jump "SAVED")))
-; 
+;; Bookmark handling
+;;
+(global-set-key (kbd "<C-f6>") '(lambda () (interactive) (bookmark-set "SAVED")))
+(global-set-key (kbd "<f6>") '(lambda () (interactive) (bookmark-jump "SAVED")))
+ 
 ;(require 'org-mime)
-; 
-;(setq org-agenda-skip-additional-timestamps-same-entry t)
-; 
+ 
+(setq org-agenda-skip-additional-timestamps-same-entry t)
+ 
 ;(setq org-table-use-standard-references (quote from))
-; 
-;(setq org-file-apps (quote ((auto-mode . emacs)
-;                            ("\\.mm\\'" . system)
-;                            ("\\.x?html?\\'" . system)
-;                            ("\\.pdf\\'" . system))))
-; 
-;; Overwrite the current window with the agenda
-;(setq org-agenda-window-setup 'current-window)
-; 
-;(setq org-clone-delete-id t)
-; 
+ 
+(setq org-file-apps (quote ((auto-mode . emacs)
+                            ("\\.mm\\'" . system)
+                            ("\\.x?html?\\'" . system)
+                            ("\\.pdf\\'" . system))))
+ 
+; Overwrite the current window with the agenda
+(setq org-agenda-window-setup 'current-window)
+ 
+(setq org-clone-delete-id t)
+ 
 ;(setq org-cycle-include-plain-lists t)
 ; 
 ;(setq org-src-fontify-natively t)

@@ -744,6 +744,14 @@
   ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
   (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
 
+;; M-xをidoで
+(use-package smex
+  :config
+  (smex-initialize)
+  :bind
+  (("M-x" . smex)
+   ("M-X" . smex-major-mode-commands)))
+
 ;; cua-modeの設定 (矩形選択)
 (cua-mode t) ; cua-modeをオン
 (setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
