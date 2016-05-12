@@ -1606,7 +1606,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
  
 ;(run-at-time "06:00" 86400 '(lambda () (setq org-habit-show-habits t)))
  
-(global-auto-revert-mode t)
+;(global-auto-revert-mode t)
  
 ;(require 'org-crypt)
 ;; Encrypt all entries before saving
