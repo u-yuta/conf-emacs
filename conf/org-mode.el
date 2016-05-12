@@ -1781,58 +1781,58 @@ Late deadlines first, then scheduled, then non-late deadlines"
  
 (setq org-clone-delete-id t)
  
-;(setq org-cycle-include-plain-lists t)
-; 
-;(setq org-src-fontify-natively t)
-; 
-;(setq org-structure-template-alist
-;      (quote (("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
-;              ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
-;              ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
-;              ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n</verse>")
-;              ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n</center>")
-;              ("l" "#+begin_latex\n?\n#+end_latex" "<literal style=\"latex\">\n?\n</literal>")
-;              ("L" "#+latex: " "<literal style=\"latex\">?</literal>")
-;              ("h" "#+begin_html\n?\n#+end_html" "<literal style=\"html\">\n?\n</literal>")
-;              ("H" "#+html: " "<literal style=\"html\">?</literal>")
-;              ("a" "#+begin_ascii\n?\n#+end_ascii")
-;              ("A" "#+ascii: ")
-;              ("i" "#+index: ?" "#+index: ?")
-;              ("I" "#+include %file ?" "<include file=%file markup=\"?\">"))))
-; 
-;(defun bh/mark-next-parent-tasks-todo ()
-;  "Visit each parent task and change NEXT states to TODO"
-;  (let ((mystate (or (and (fboundp 'org-state)
-;                          state)
-;                     (nth 2 (org-heading-components)))))
-;    (when mystate
-;      (save-excursion
-;        (while (org-up-heading-safe)
-;          (when (member (nth 2 (org-heading-components)) (list "NEXT"))
-;            (org-todo "TODO")))))))
-; 
-;(add-hook 'org-after-todo-state-change-hook 'bh/mark-next-parent-tasks-todo 'append)
-;(add-hook 'org-clock-in-hook 'bh/mark-next-parent-tasks-todo 'append)
-; 
-;(setq org-startup-folded t)
-; 
-;(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
-;(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
-;(add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
-;(add-hook 'message-mode-hook 'orgtbl-mode 'append)
+(setq org-cycle-include-plain-lists t)
+ 
+(setq org-src-fontify-natively t)
+ 
+(setq org-structure-template-alist
+      (quote (("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
+              ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
+              ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
+              ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n</verse>")
+              ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n</center>")
+              ("l" "#+begin_latex\n?\n#+end_latex" "<literal style=\"latex\">\n?\n</literal>")
+              ("L" "#+latex: " "<literal style=\"latex\">?</literal>")
+              ("h" "#+begin_html\n?\n#+end_html" "<literal style=\"html\">\n?\n</literal>")
+              ("H" "#+html: " "<literal style=\"html\">?</literal>")
+              ("a" "#+begin_ascii\n?\n#+end_ascii")
+              ("A" "#+ascii: ")
+              ("i" "#+index: ?" "#+index: ?")
+              ("I" "#+include %file ?" "<include file=%file markup=\"?\">"))))
+ 
+(defun bh/mark-next-parent-tasks-todo ()
+  "Visit each parent task and change NEXT states to TODO"
+  (let ((mystate (or (and (fboundp 'org-state)
+                          state)
+                     (nth 2 (org-heading-components)))))
+    (when mystate
+      (save-excursion
+        (while (org-up-heading-safe)
+          (when (member (nth 2 (org-heading-components)) (list "NEXT"))
+            (org-todo "TODO")))))))
+ 
+(add-hook 'org-after-todo-state-change-hook 'bh/mark-next-parent-tasks-todo 'append)
+(add-hook 'org-clock-in-hook 'bh/mark-next-parent-tasks-todo 'append)
+ 
+(setq org-startup-folded t)
+ 
+(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
+(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
+(add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
+(add-hook 'message-mode-hook 'orgtbl-mode 'append)
 ;(add-hook 'message-mode-hook 'turn-on-flyspell 'append)
-;(add-hook 'message-mode-hook
-;          '(lambda () (setq fill-column 72))
-;          'append)
-; 
-;;; flyspell mode for spell checking everywhere
+(add-hook 'message-mode-hook
+          '(lambda () (setq fill-column 72))
+          'append)
+ 
+;; flyspell mode for spell checking everywhere
 ;(add-hook 'org-mode-hook 'turn-on-flyspell 'append)
-; 
-;; Disable keys in org-mode
-;;    C-c [ 
-;;    C-c ]
-;;    C-c ;
-;;    C-c C-x C-q  cancelling the clock (we never want this)
+ 
+; Disable keys in org-mode
+;    C-c [ 
+;    C-c ]
+;    C-c ;
+;    C-c C-x C-q  cancelling the clock (we never want this)
 (add-hook 'org-mode-hook
           '(lambda ()
              ;; Undefine C-c [ and C-c ] since this breaks my
@@ -1859,7 +1859,7 @@ Late deadlines first, then scheduled, then non-late deadlines"
  
 (setq org-catch-invisible-edits 'error)
  
-;(setq org-export-coding-system 'utf-8)
+(setq org-export-coding-system 'utf-8)
 ;(prefer-coding-system 'utf-8)
 ;(set-charset-priority 'unicode)
 ;(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
