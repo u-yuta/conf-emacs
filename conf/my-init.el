@@ -785,6 +785,11 @@
 	'(add-to-list 'company-backends 'company-anaconda)))
 
 
+;; markdown-mode
+(use-package markdown-mode
+   :mode (("\\.md\\'" . markdown-mode))
+   )
+
 ;; ------------------------------------------------------------------------
 ;; org-mode
 ;; ------------------------------------------------------------------------
