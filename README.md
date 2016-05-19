@@ -3,7 +3,11 @@ conf-emacs
 
 ## Description
 
-Windowsの[gnupack](https://osdn.jp/projects/gnupack/)に付属するEmacsの設定ファイル。
+Emacsの設定ファイル。環境は以下。
+
+* Windows7 or 10 64bit
+* [gnupack](https://osdn.jp/projects/gnupack/)に付属のEmacs
+* gnupackのバージョンはgnupack_devel-13.06-2015.11.08
 
 ### Font
 
@@ -22,7 +26,7 @@ Cygwinのpythonではなく、WindowsのAnacondaを使用するため、gnupack�
 ```
 ANACONDA_PATH = %USERPROFILE%\Anaconda3
 PYTHON_PATH = %ANACONDA_PATH%;%ANACONDA_PATH%\Scripts;%ANACONDA_PATH%\Library\bin
-PATH = %PATH%
+...
 PATH = %PATH%;%PYTHON_PATH%
 ```
 

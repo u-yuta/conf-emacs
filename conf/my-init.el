@@ -853,7 +853,6 @@
 
 (setq org-agenda-diary-file "journal.org")
 
-;(load "my-init")
 
 ;; Local Variables:
 ;; coding: utf-8
