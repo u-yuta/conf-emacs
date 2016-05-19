@@ -776,6 +776,14 @@
 (autoload 'dmacro-exec "dmacro" nil t)
 
 
+;; anaconda-mode (python)
+(use-package anaconda-mode
+  :config
+  (add-hook 'python-mode-hook 'anaconda-mode)
+  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+  (eval-after-load "company"
+	'(add-to-list 'company-backends 'company-anaconda)))
+
 
 ;; ------------------------------------------------------------------------
 ;; org-mode
@@ -808,7 +816,7 @@
                "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
               ("n" "note" entry (file "refile.org")
                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-              ("j" "Journal" entry (file+datetree "diary.org")
+              ("j" "Journal" entry (file+datetree "journal.org")
                "* %?\n%U\n" :clock-in t :clock-resume t)
               ("w" "org-protocol" entry (file "refile.org")
                "* TODO Review %c\n%U\n" :immediate-finish t)
@@ -838,7 +846,7 @@
                             ("CANCELLED" . ?c)
                             ("FLAGGED" . ??))))
 
-(setq org-agenda-diary-file "diary.org")
+(setq org-agenda-diary-file "journal.org")
 
 ;(load "my-init")
 
