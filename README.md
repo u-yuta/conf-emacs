@@ -15,9 +15,9 @@ Emacsの設定ファイル。環境は以下。
 
 ### org-mode
 
-[Org Mode - Organize Your Life In Plain Text!](http://doc.norang.ca/org-mode.html) を拝借している。動作を遅らせる設定項目をOFFにした。
+[Org Mode - Organize Your Life In Plain Text!](http://doc.norang.ca/org-mode.html) の設定を拝借している。動作を遅らせる設定項目をOFFにした。
 
-orgデータファイルの置き場所等は、`my-init.el`で設定するようにした。
+orgデータファイルの置き場所やorg-captureのテンプレートは、`my-init.el`で設定するようにした。
 
 ### Python
 
