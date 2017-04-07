@@ -6,6 +6,37 @@
   (normal-top-level-add-subdirs-to-load-path)
   )
 
+(setq package-archives
+      '(("gnu"         . "http://elpa.gnu.org/packages/")
+        ("org"         . "http://orgmode.org/elpa/")
+        ("melpa"       . "http://melpa.org/packages/")
+        ("marmalade"   . "http://marmalade-repo.org/packages/")))
+(package-initialize)
+(require 'use-package)
+
+; 何もしないマクロ定義
+(unless (require 'use-package nil t)
+  (defmacro use-package (&rest args)))
+
+;; C-hでbackspace
+(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+
+;; Home, End で、バッファの先頭、終端
+(global-set-key [home] 'beginning-of-buffer)
+(global-set-key [end] 'end-of-buffer)
+
+;; 警告音の代わりに画面フラッシュ
+(setq visible-bell t)
+
+(delete-selection-mode t)
+
+;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
+(setq dired-dwim-target t)
+;; ディレクトリを再帰的にコピーする
+(setq dired-recursive-copies 'always)
+;; diredバッファでC-sした時にファイル名だけにマッチするように
+(setq dired-isearch-filenames t)
+
 ;; デフォルトの文字コード
 (set-default-coding-systems 'utf-8-dos)
 
@@ -186,12 +217,71 @@
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
 
-;; C-hでbackspace
-(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+(use-package tabbar
+  :config
+  ;; tabbar有効化（有効：t、無効：nil）
+  (call-interactively 'tabbar-mode t)
 
-;; Home, End で、バッファの先頭、終端
-(global-set-key [home] 'beginning-of-buffer)
-(global-set-key [end] 'end-of-buffer)
+  ;; ボタン非表示
+  (dolist (btn '(tabbar-buffer-home-button
+                 tabbar-scroll-left-button
+                 tabbar-scroll-right-button))
+    (set btn (cons (cons "" nil) (cons "" nil)))
+    )
 
-;; 警告音の代わりに画面フラッシュ
-(setq visible-bell t)
+  ;; タブ切替にマウスホイールを使用（有効：0、無効：-1）
+  (call-interactively 'tabbar-mwheel-mode -1)
+  (remove-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
+  (remove-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
+
+  ;; タブグループを使用（有効：t、無効：nil）
+  (defvar tabbar-buffer-groups-function nil)
+  (setq tabbar-buffer-groups-function nil)
+
+  ;; タブの表示間隔
+  (defvar tabbar-separator nil)
+  (setq tabbar-separator '(1.0))
+
+  ;; タブ切り替え
+  (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
+  (global-set-key (kbd "C-q")     'tabbar-backward-tab))
+
+;; 大文字・小文字を区別しないでサーチ（有効：t、無効：nil）
+(setq-default case-fold-search t)
+
+;; インクリメント検索時に縦スクロールを有効化（有効：t、無効：nil）
+(setq isearch-allow-scroll nil)
+
+;; C-dで検索文字列を一文字削除
+(define-key isearch-mode-map (kbd "C-d") 'isearch-delete-char)
+
+;; C-yで検索文字列にヤンク貼り付け
+(define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
+
+;; C-eで検索文字列を編集
+(define-key isearch-mode-map (kbd "C-e") 'isearch-edit-string)
+
+;; Tabで検索文字列を補完
+(define-key isearch-mode-map (kbd "TAB") 'isearch-yank-word)
+
+;; C-gで検索を終了
+(define-key isearch-mode-map (kbd "C-g")
+  '(lambda() (interactive) (isearch-done)))
+
+;; 日本語の検索文字列をミニバッファに表示
+(define-key isearch-mode-map (kbd "<compend>")
+  '(lambda() (interactive) (isearch-update)))
+(define-key isearch-mode-map (kbd "<kanji>")
+  'isearch-toggle-input-method)
+(add-hook
+ 'isearch-mode-hook
+ '(lambda() (setq w32-ime-composition-window (minibuffer-window)))
+ )
+(add-hook
+ 'isearch-mode-end-hook
+ '(lambda() (setq w32-ime-composition-window nil))
+ )
+
+(setq org-src-tab-acts-natively t)
+
+;

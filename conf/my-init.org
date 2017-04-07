@@ -1,6 +1,7 @@
 * Config
+
 ** site-lisp
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (let ( (default-directory
          (file-name-as-directory (concat user-emacs-directory "site-lisp")))
        )
@@ -9,8 +10,42 @@
   )
 
 #+end_src
+** package manager
+#+begin_src emacs-lisp
+(setq package-archives
+      '(("gnu"         . "http://elpa.gnu.org/packages/")
+        ("org"         . "http://orgmode.org/elpa/")
+        ("melpa"       . "http://melpa.org/packages/")
+        ("marmalade"   . "http://marmalade-repo.org/packages/")))
+(package-initialize)
+(require 'use-package)
+#+end_src
+** use-package
+use-package ライブラリが存在しない場合に、init.el の評価が途中で失敗することを回避。
+#+begin_src emacs-lisp
+; 何もしないマクロ定義
+(unless (require 'use-package nil t)
+  (defmacro use-package (&rest args)))
+#+end_src
+** キーバインド
+#+begin_src emacs-lisp
+;; C-hでbackspace
+(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+
+;; Home, End で、バッファの先頭、終端
+(global-set-key [home] 'beginning-of-buffer)
+(global-set-key [end] 'end-of-buffer)
+
+;; 警告音の代わりに画面フラッシュ
+(setq visible-bell t)
+#+end_src
+** basic
+*** リージョンを削除できるように
+  #+begin_src emacs-lisp
+  (delete-selection-mode t)
+  #+end_src
 ** dired
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
 (setq dired-dwim-target t)
 ;; ディレクトリを再帰的にコピーする
@@ -19,7 +54,7 @@
 (setq dired-isearch-filenames t)
 #+end_src
 ** language - coding system
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; デフォルトの文字コード
 (set-default-coding-systems 'utf-8-dos)
 
@@ -42,7 +77,7 @@
 
 #+end_src
 ** language - input method
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ; GitHub - chuntaro/NTEmacs64: Windows 版 Emacs (通称 NTEmacs) の 64bit 版
 ; https://github.com/chuntaro/NTEmacs64
 
@@ -81,7 +116,7 @@
 
 #+end_src
 ** language - fontset
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; デフォルト フォント
 ;; (set-face-attribute 'default nil :family "Migu 1M" :height 110)
 ;(set-face-font 'default "Migu 1M-11:antialias=standard")
@@ -114,7 +149,7 @@
 
 #+end_src
 ** screen - frame
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; フレーム タイトル
 (setq frame-title-format
 	  (format "%%f - Emacs %s@%s" emacs-version system-name))
@@ -128,7 +163,7 @@
 
 #+end_src
 ** screen - mode line
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; 行番号の表示（有効：t、無効：nil）
 (line-number-mode t)
 
@@ -181,7 +216,7 @@
 
 #+end_src
 ** screen - buffer
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; 同一バッファ名にディレクトリ付与
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
@@ -190,7 +225,7 @@
 
 #+end_src
 ** screen - linum
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (require 'linum)
 
 ;; 行移動を契機に描画
@@ -218,20 +253,82 @@
 
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
-
-
-
-
 #+end_src
-** キーバインド
-#+begin_src emacs-lisp :tangle yes
-;; C-hでbackspace
-(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 
-;; Home, End で、バッファの先頭、終端
-(global-set-key [home] 'beginning-of-buffer)
-(global-set-key [end] 'end-of-buffer)
+** screen tabbar
+#+begin_src emacs-lisp
+(use-package tabbar
+  :config
+  ;; tabbar有効化（有効：t、無効：nil）
+  (call-interactively 'tabbar-mode t)
 
-;; 警告音の代わりに画面フラッシュ
-(setq visible-bell t)
+  ;; ボタン非表示
+  (dolist (btn '(tabbar-buffer-home-button
+                 tabbar-scroll-left-button
+                 tabbar-scroll-right-button))
+    (set btn (cons (cons "" nil) (cons "" nil)))
+    )
+
+  ;; タブ切替にマウスホイールを使用（有効：0、無効：-1）
+  (call-interactively 'tabbar-mwheel-mode -1)
+  (remove-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
+  (remove-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
+
+  ;; タブグループを使用（有効：t、無効：nil）
+  (defvar tabbar-buffer-groups-function nil)
+  (setq tabbar-buffer-groups-function nil)
+
+  ;; タブの表示間隔
+  (defvar tabbar-separator nil)
+  (setq tabbar-separator '(1.0))
+
+  ;; タブ切り替え
+  (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
+  (global-set-key (kbd "C-q")     'tabbar-backward-tab))
+#+end_src
+** isearch
+#+begin_src emacs-lisp
+;; 大文字・小文字を区別しないでサーチ（有効：t、無効：nil）
+(setq-default case-fold-search t)
+
+;; インクリメント検索時に縦スクロールを有効化（有効：t、無効：nil）
+(setq isearch-allow-scroll nil)
+
+;; C-dで検索文字列を一文字削除
+(define-key isearch-mode-map (kbd "C-d") 'isearch-delete-char)
+
+;; C-yで検索文字列にヤンク貼り付け
+(define-key isearch-mode-map (kbd "C-y") 'isearch-yank-kill)
+
+;; C-eで検索文字列を編集
+(define-key isearch-mode-map (kbd "C-e") 'isearch-edit-string)
+
+;; Tabで検索文字列を補完
+(define-key isearch-mode-map (kbd "TAB") 'isearch-yank-word)
+
+;; C-gで検索を終了
+(define-key isearch-mode-map (kbd "C-g")
+  '(lambda() (interactive) (isearch-done)))
+
+;; 日本語の検索文字列をミニバッファに表示
+(define-key isearch-mode-map (kbd "<compend>")
+  '(lambda() (interactive) (isearch-update)))
+(define-key isearch-mode-map (kbd "<kanji>")
+  'isearch-toggle-input-method)
+(add-hook
+ 'isearch-mode-hook
+ '(lambda() (setq w32-ime-composition-window (minibuffer-window)))
+ )
+(add-hook
+ 'isearch-mode-end-hook
+ '(lambda() (setq w32-ime-composition-window nil))
+ )
+#+end_src
+** org-mode
+#+begin_src emacs-lisp
+(setq org-src-tab-acts-natively t)
+#+end_src
+** _sample
+#+begin_src emacs-lisp
+; 
 #+end_src
