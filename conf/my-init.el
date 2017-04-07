@@ -1,0 +1,197 @@
+
+(let ( (default-directory
+         (file-name-as-directory (concat user-emacs-directory "site-lisp")))
+       )
+  (add-to-list 'load-path default-directory)
+  (normal-top-level-add-subdirs-to-load-path)
+  )
+
+;; デフォルトの文字コード
+(set-default-coding-systems 'utf-8-dos)
+
+;; テキストファイル／新規バッファの文字コード
+(prefer-coding-system 'utf-8-dos)
+
+;; ファイル名の文字コード
+(set-file-name-coding-system 'utf-8-unix)
+
+;; キーボード入力の文字コード
+(set-keyboard-coding-system 'utf-8-unix)
+
+;; サブプロセスのデフォルト文字コード
+(setq default-process-coding-system '(undecided-dos . utf-8-unix))
+
+;; 環境依存文字 文字化け対応
+(set-charset-priority 'ascii 'japanese-jisx0208 'latin-jisx0201
+                      'katakana-jisx0201 'iso-8859-1 'cp1252 'unicode)
+(set-coding-system-priority 'utf-8 'euc-jp 'iso-2022-jp 'cp932)
+
+; GitHub - chuntaro/NTEmacs64: Windows 版 Emacs (通称 NTEmacs) の 64bit 版
+; https://github.com/chuntaro/NTEmacs64
+
+;; (set-language-environment "UTF-8") ;; UTF-8 でも問題ないので適宜コメントアウトしてください
+(setq default-input-method "W32-IME")
+(setq-default w32-ime-mode-line-state-indicator "[--]")
+(setq w32-ime-mode-line-state-indicator-list '("[--]" "[あ]" "[--]"))
+(w32-ime-initialize)
+;; 日本語入力時にカーソルの色を変える設定 (色は適宜変えてください)
+(add-hook 'w32-ime-on-hook '(lambda () (set-cursor-color "coral4")))
+(add-hook 'w32-ime-off-hook '(lambda () (set-cursor-color "black")))
+
+;; 以下はお好みで設定してください
+;; 全てバッファ内で日本語入力中に特定のコマンドを実行した際の日本語入力無効化処理です
+;; もっと良い設定方法がありましたら issue などあげてもらえると助かります
+
+;; ミニバッファに移動した際は最初に日本語入力が無効な状態にする
+(add-hook 'minibuffer-setup-hook 'deactivate-input-method)
+
+;; isearch に移行した際に日本語入力を無効にする
+(add-hook 'isearch-mode-hook '(lambda ()
+                                (deactivate-input-method)
+                                (setq w32-ime-composition-window (minibuffer-window))))
+(add-hook 'isearch-mode-end-hook '(lambda () (setq w32-ime-composition-window nil)))
+
+;; helm 使用中に日本語入力を無効にする
+(advice-add 'helm :around '(lambda (orig-fun &rest args)
+                             (let ((select-window-functions nil)
+                                   (w32-ime-composition-window (minibuffer-window)))
+                               (deactivate-input-method)
+                               (apply orig-fun args))))
+
+; USキーボードで日本語入力のON/OFFを切り替えるのに"Alt-`"
+; を使うとメッセージが出るのを抑止する。
+(global-set-key [M-kanji] 'ignore)
+
+;; デフォルト フォント
+;; (set-face-attribute 'default nil :family "Migu 1M" :height 110)
+;(set-face-font 'default "Migu 1M-11:antialias=standard")
+(set-face-font 'default "Myrica M-10:antialias=natural")
+
+;; プロポーショナル フォント
+;; (set-face-attribute 'variable-pitch nil :family "Migu 1M" :height 110)
+;(set-face-font 'variable-pitch "Migu 1M-11:antialias=standard")
+(set-face-font 'variable-pitch "Myrica M-10:antialias=natural")
+
+;; 等幅フォント
+;; (set-face-attribute 'fixed-pitch nil :family "Migu 1M" :height 110)
+;(set-face-font 'fixed-pitch "Migu 1M-11:antialias=standard")
+(set-face-font 'fixed-pitch "Myrica M-10:antialias=natural")
+
+;; ツールチップ表示フォント
+;; (set-face-attribute 'tooltip nil :family "Migu 1M" :height 90)
+;(set-face-font 'tooltip "Migu 1M-9:antialias=standard")
+(set-face-font 'tooltip "Myrica M-8:antialias=natural")
+
+;; フォントサイズ調整
+(global-set-key (kbd "C-<wheel-up>")   '(lambda() (interactive) (text-scale-increase 1)))
+(global-set-key (kbd "C-=")            '(lambda() (interactive) (text-scale-increase 1)))
+(global-set-key (kbd "C-<wheel-down>") '(lambda() (interactive) (text-scale-decrease 1)))
+(global-set-key (kbd "C--")            '(lambda() (interactive) (text-scale-decrease 1)))
+
+;; フォントサイズ リセット
+(global-set-key (kbd "M-0") '(lambda() (interactive) (text-scale-set 0)))
+
+;; フレーム タイトル
+(setq frame-title-format
+          (format "%%f - Emacs %s@%s" emacs-version system-name))
+
+;; 初期画面の非表示（有効：t、無効：nil）
+(setq inhibit-startup-message nil)
+(setq inhibit-startup-screen t)
+
+;; フルスクリーン化
+(global-set-key (kbd "<M-return>") 'toggle-frame-fullscreen)
+
+;; 行番号の表示（有効：t、無効：nil）
+(line-number-mode t)
+
+;; 列番号の表示（有効：t、無効：nil）
+(column-number-mode t)
+
+;; モードライン カスタマイズ
+(setq-default
+ mode-line-format
+ `(
+   ""
+   w32-ime-mode-line-state-indicator
+   " "
+   mode-line-mule-info
+   mode-line-modified
+   mode-line-frame-identification
+   mode-line-buffer-identification
+   " "
+   global-mode-string
+   " %[("
+   mode-name
+   mode-line-process
+   "%n"
+   ")%] "
+   (which-func-mode ("" which-func-format " "))
+   (line-number-mode
+    (:eval
+     (format "L%%l/L%d " (count-lines (point-max) 1) )))
+   (column-number-mode " C%c ")
+   (-3 . "%p")
+   )
+ )
+(setq mode-line-frame-identification " ")
+
+;; cp932エンコードの表記変更
+(coding-system-put 'cp932 :mnemonic ?P)
+(coding-system-put 'cp932-dos :mnemonic ?P)
+(coding-system-put 'cp932-unix :mnemonic ?P)
+(coding-system-put 'cp932-mac :mnemonic ?P)
+
+;; UTF-8エンコードの表記変更
+(coding-system-put 'utf-8 :mnemonic ?U)
+(coding-system-put 'utf-8-with-signature :mnemonic ?u)
+
+;; 改行コードの表記追加
+(setq eol-mnemonic-dos       ":Dos ")
+(setq eol-mnemonic-mac       ":Mac ")
+(setq eol-mnemonic-unix      ":Unx ")
+(setq eol-mnemonic-undecided ":??? ")
+
+;; 同一バッファ名にディレクトリ付与
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+(setq uniquify-ignore-buffers-re "*[^*]+*")
+
+(require 'linum)
+
+;; 行移動を契機に描画
+(defvar linum-line-number 0)
+(declare-function linum-update-current "linum" ())
+(defadvice linum-update-current
+    (around linum-update-current-around activate compile)
+  (unless (= linum-line-number (line-number-at-pos))
+    (setq linum-line-number (line-number-at-pos))
+    ad-do-it
+    ))
+
+;; バッファ中の行番号表示の遅延設定
+(defvar linum-delay nil)
+(setq linum-delay t)
+(defadvice linum-schedule (around linum-schedule-around () activate)
+  (run-with-idle-timer 1.0 nil #'linum-update-current))
+
+;; 行番号の書式
+(defvar linum-format nil)
+(setq linum-format "%5d")
+
+;; バッファ中の行番号表示（有効：t、無効：nil）
+(global-linum-mode t)
+
+;; 文字サイズ
+(set-face-attribute 'linum nil :height 0.75)
+
+;; C-hでbackspace
+(define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
+
+;; Home, End で、バッファの先頭、終端
+(global-set-key [home] 'beginning-of-buffer)
+(global-set-key [end] 'end-of-buffer)
+
+;; 警告音の代わりに画面フラッシュ
+(setq visible-bell t)
