@@ -25,10 +25,11 @@
 (global-set-key [home] 'beginning-of-buffer)
 (global-set-key [end] 'end-of-buffer)
 
-;; 警告音の代わりに画面フラッシュ
 (setq visible-bell t)
 
 (delete-selection-mode t)
+
+(global-set-key "\C-x\C-b" 'buffer-menu)
 
 ;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
 (setq dired-dwim-target t)
@@ -69,10 +70,6 @@
 (add-hook 'w32-ime-on-hook '(lambda () (set-cursor-color "coral4")))
 (add-hook 'w32-ime-off-hook '(lambda () (set-cursor-color "black")))
 
-;; 以下はお好みで設定してください
-;; 全てバッファ内で日本語入力中に特定のコマンドを実行した際の日本語入力無効化処理です
-;; もっと良い設定方法がありましたら issue などあげてもらえると助かります
-
 ;; ミニバッファに移動した際は最初に日本語入力が無効な状態にする
 (add-hook 'minibuffer-setup-hook 'deactivate-input-method)
 
@@ -96,22 +93,22 @@
 ;; デフォルト フォント
 ;; (set-face-attribute 'default nil :family "Migu 1M" :height 110)
 ;(set-face-font 'default "Migu 1M-11:antialias=standard")
-(set-face-font 'default "Myrica M-10:antialias=natural")
+(set-face-font 'default "Myrica M-11:antialias=natural")
 
 ;; プロポーショナル フォント
 ;; (set-face-attribute 'variable-pitch nil :family "Migu 1M" :height 110)
 ;(set-face-font 'variable-pitch "Migu 1M-11:antialias=standard")
-(set-face-font 'variable-pitch "Myrica M-10:antialias=natural")
+(set-face-font 'variable-pitch "Myrica M-11:antialias=natural")
 
 ;; 等幅フォント
 ;; (set-face-attribute 'fixed-pitch nil :family "Migu 1M" :height 110)
 ;(set-face-font 'fixed-pitch "Migu 1M-11:antialias=standard")
-(set-face-font 'fixed-pitch "Myrica M-10:antialias=natural")
+(set-face-font 'fixed-pitch "Myrica M-11:antialias=natural")
 
 ;; ツールチップ表示フォント
 ;; (set-face-attribute 'tooltip nil :family "Migu 1M" :height 90)
 ;(set-face-font 'tooltip "Migu 1M-9:antialias=standard")
-(set-face-font 'tooltip "Myrica M-8:antialias=natural")
+(set-face-font 'tooltip "Myrica M-9:antialias=natural")
 
 ;; フォントサイズ調整
 (global-set-key (kbd "C-<wheel-up>")   '(lambda() (interactive) (text-scale-increase 1)))
@@ -217,35 +214,6 @@
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
 
-(use-package tabbar
-  :config
-  ;; tabbar有効化（有効：t、無効：nil）
-  (call-interactively 'tabbar-mode t)
-
-  ;; ボタン非表示
-  (dolist (btn '(tabbar-buffer-home-button
-                 tabbar-scroll-left-button
-                 tabbar-scroll-right-button))
-    (set btn (cons (cons "" nil) (cons "" nil)))
-    )
-
-  ;; タブ切替にマウスホイールを使用（有効：0、無効：-1）
-  (call-interactively 'tabbar-mwheel-mode -1)
-  (remove-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
-  (remove-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
-
-  ;; タブグループを使用（有効：t、無効：nil）
-  (defvar tabbar-buffer-groups-function nil)
-  (setq tabbar-buffer-groups-function nil)
-
-  ;; タブの表示間隔
-  (defvar tabbar-separator nil)
-  (setq tabbar-separator '(1.0))
-
-  ;; タブ切り替え
-  (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
-  (global-set-key (kbd "C-q")     'tabbar-backward-tab))
-
 ;; 大文字・小文字を区別しないでサーチ（有効：t、無効：nil）
 (setq-default case-fold-search t)
 
@@ -282,6 +250,80 @@
  '(lambda() (setq w32-ime-composition-window nil))
  )
 
+;; fontify code in code blocks
+(setq org-src-fontify-natively t)
+
 (setq org-src-tab-acts-natively t)
+
+(use-package tabbar
+  :config
+  ;; tabbar有効化（有効：t、無効：nil）
+  (call-interactively 'tabbar-mode t)
+
+  ;; ボタン非表示
+  (dolist (btn '(tabbar-buffer-home-button
+                 tabbar-scroll-left-button
+                 tabbar-scroll-right-button))
+    (set btn (cons (cons "" nil) (cons "" nil)))
+    )
+
+  ;; タブ切替にマウスホイールを使用（有効：0、無効：-1）
+  (call-interactively 'tabbar-mwheel-mode -1)
+  (remove-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
+  (remove-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
+
+  ;; タブグループを使用（有効：t、無効：nil）
+  (defvar tabbar-buffer-groups-function nil)
+  (setq tabbar-buffer-groups-function nil)
+
+  ;; タブの表示間隔
+  (defvar tabbar-separator nil)
+  (setq tabbar-separator '(1.0))
+
+  ;; タブ切り替え
+  (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
+  (global-set-key (kbd "C-q")     'tabbar-backward-tab))
+
+(require 'saveplace)
+(save-place-mode 1) ;; Changed for Emacs 25
+
+;; open recent files
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 400)
+  (setq recentf-exclude '(".recentf"))
+  (setq recentf-auto-cleanup 10)
+  (setq recentf-auto-save-timer
+        (run-with-idle-timer 30 t 'recentf-save-list))
+  (defun recentf-ido-find-file ()
+        "Find a recent file using Ido."
+        (interactive)
+        (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+          (when file
+                (find-file file))))
+  (recentf-mode 1)
+  :bind
+  ("C-x C-r" . recentf-ido-find-file))
+
+(use-package ido
+  :init
+  (ido-mode t)
+  :config
+  (setq ido-enable-flex-matching t)
+  (when (fboundp 'ido-vertical-mode)
+        (ido-vertical-mode 1))
+  ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
+  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
+
+(use-package smex
+  :ensure t
+  :config
+  (smex-initialize)
+  :bind
+  (("M-x" . smex)
+   ("M-X" . smex-major-mode-commands)))
+
+(cua-mode t) ; cua-modeをオン
+(setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
 
 ;

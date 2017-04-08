@@ -10,7 +10,8 @@
   )
 
 #+end_src
-** package manager
+** パッケージ管理
+*** package manager
 #+begin_src emacs-lisp
 (setq package-archives
       '(("gnu"         . "http://elpa.gnu.org/packages/")
@@ -20,7 +21,7 @@
 (package-initialize)
 (require 'use-package)
 #+end_src
-** use-package
+*** use-package
 use-package ライブラリが存在しない場合に、init.el の評価が途中で失敗することを回避。
 #+begin_src emacs-lisp
 ; 何もしないマクロ定義
@@ -35,8 +36,10 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ;; Home, End で、バッファの先頭、終端
 (global-set-key [home] 'beginning-of-buffer)
 (global-set-key [end] 'end-of-buffer)
+#+end_src
 
-;; 警告音の代わりに画面フラッシュ
+*** 警告音の代わりに画面フラッシュ
+#+begin_src emacs-lisp
 (setq visible-bell t)
 #+end_src
 ** basic
@@ -44,6 +47,11 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
   #+begin_src emacs-lisp
   (delete-selection-mode t)
   #+end_src
+*** buffer選択画面をアクティブウィンドウに表示する。
+#+begin_src emacs-lisp
+(global-set-key "\C-x\C-b" 'buffer-menu)
+#+end_src
+** 
 ** dired
 #+begin_src emacs-lisp
 ;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
@@ -53,7 +61,8 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ;; diredバッファでC-sした時にファイル名だけにマッチするように
 (setq dired-isearch-filenames t)
 #+end_src
-** language - coding system
+** 日本語
+*** 文字コード
 #+begin_src emacs-lisp
 ;; デフォルトの文字コード
 (set-default-coding-systems 'utf-8-dos)
@@ -76,7 +85,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (set-coding-system-priority 'utf-8 'euc-jp 'iso-2022-jp 'cp932)
 
 #+end_src
-** language - input method
+*** 日本語入力
 #+begin_src emacs-lisp
 ; GitHub - chuntaro/NTEmacs64: Windows 版 Emacs (通称 NTEmacs) の 64bit 版
 ; https://github.com/chuntaro/NTEmacs64
@@ -89,10 +98,6 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ;; 日本語入力時にカーソルの色を変える設定 (色は適宜変えてください)
 (add-hook 'w32-ime-on-hook '(lambda () (set-cursor-color "coral4")))
 (add-hook 'w32-ime-off-hook '(lambda () (set-cursor-color "black")))
-
-;; 以下はお好みで設定してください
-;; 全てバッファ内で日本語入力中に特定のコマンドを実行した際の日本語入力無効化処理です
-;; もっと良い設定方法がありましたら issue などあげてもらえると助かります
 
 ;; ミニバッファに移動した際は最初に日本語入力が無効な状態にする
 (add-hook 'minibuffer-setup-hook 'deactivate-input-method)
@@ -113,29 +118,28 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ; USキーボードで日本語入力のON/OFFを切り替えるのに"Alt-`"
 ; を使うとメッセージが出るのを抑止する。
 (global-set-key [M-kanji] 'ignore)
-
 #+end_src
-** language - fontset
+*** Fonts
 #+begin_src emacs-lisp
 ;; デフォルト フォント
 ;; (set-face-attribute 'default nil :family "Migu 1M" :height 110)
 ;(set-face-font 'default "Migu 1M-11:antialias=standard")
-(set-face-font 'default "Myrica M-10:antialias=natural")
+(set-face-font 'default "Myrica M-11:antialias=natural")
 
 ;; プロポーショナル フォント
 ;; (set-face-attribute 'variable-pitch nil :family "Migu 1M" :height 110)
 ;(set-face-font 'variable-pitch "Migu 1M-11:antialias=standard")
-(set-face-font 'variable-pitch "Myrica M-10:antialias=natural")
+(set-face-font 'variable-pitch "Myrica M-11:antialias=natural")
 
 ;; 等幅フォント
 ;; (set-face-attribute 'fixed-pitch nil :family "Migu 1M" :height 110)
 ;(set-face-font 'fixed-pitch "Migu 1M-11:antialias=standard")
-(set-face-font 'fixed-pitch "Myrica M-10:antialias=natural")
+(set-face-font 'fixed-pitch "Myrica M-11:antialias=natural")
 
 ;; ツールチップ表示フォント
 ;; (set-face-attribute 'tooltip nil :family "Migu 1M" :height 90)
 ;(set-face-font 'tooltip "Migu 1M-9:antialias=standard")
-(set-face-font 'tooltip "Myrica M-8:antialias=natural")
+(set-face-font 'tooltip "Myrica M-9:antialias=natural")
 
 ;; フォントサイズ調整
 (global-set-key (kbd "C-<wheel-up>")   '(lambda() (interactive) (text-scale-increase 1)))
@@ -145,10 +149,9 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 
 ;; フォントサイズ リセット
 (global-set-key (kbd "M-0") '(lambda() (interactive) (text-scale-set 0)))
-
-
 #+end_src
-** screen - frame
+** Screen
+*** frame
 #+begin_src emacs-lisp
 ;; フレーム タイトル
 (setq frame-title-format
@@ -162,7 +165,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (global-set-key (kbd "<M-return>") 'toggle-frame-fullscreen)
 
 #+end_src
-** screen - mode line
+*** mode line
 #+begin_src emacs-lisp
 ;; 行番号の表示（有効：t、無効：nil）
 (line-number-mode t)
@@ -215,7 +218,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (setq eol-mnemonic-undecided ":??? ") 
 
 #+end_src
-** screen - buffer
+*** buffer
 #+begin_src emacs-lisp
 ;; 同一バッファ名にディレクトリ付与
 (require 'uniquify)
@@ -224,7 +227,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (setq uniquify-ignore-buffers-re "*[^*]+*")
 
 #+end_src
-** screen - linum
+*** linum
 #+begin_src emacs-lisp
 (require 'linum)
 
@@ -253,38 +256,6 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
-#+end_src
-
-** screen tabbar
-#+begin_src emacs-lisp
-(use-package tabbar
-  :config
-  ;; tabbar有効化（有効：t、無効：nil）
-  (call-interactively 'tabbar-mode t)
-
-  ;; ボタン非表示
-  (dolist (btn '(tabbar-buffer-home-button
-                 tabbar-scroll-left-button
-                 tabbar-scroll-right-button))
-    (set btn (cons (cons "" nil) (cons "" nil)))
-    )
-
-  ;; タブ切替にマウスホイールを使用（有効：0、無効：-1）
-  (call-interactively 'tabbar-mwheel-mode -1)
-  (remove-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
-  (remove-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
-
-  ;; タブグループを使用（有効：t、無効：nil）
-  (defvar tabbar-buffer-groups-function nil)
-  (setq tabbar-buffer-groups-function nil)
-
-  ;; タブの表示間隔
-  (defvar tabbar-separator nil)
-  (setq tabbar-separator '(1.0))
-
-  ;; タブ切り替え
-  (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
-  (global-set-key (kbd "C-q")     'tabbar-backward-tab))
 #+end_src
 ** isearch
 #+begin_src emacs-lisp
@@ -326,9 +297,99 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 #+end_src
 ** org-mode
 #+begin_src emacs-lisp
+;; fontify code in code blocks
+(setq org-src-fontify-natively t)
+
 (setq org-src-tab-acts-natively t)
 #+end_src
+** packages
+
+*** tabbar タブ表示
+#+begin_src emacs-lisp
+(use-package tabbar
+  :config
+  ;; tabbar有効化（有効：t、無効：nil）
+  (call-interactively 'tabbar-mode t)
+
+  ;; ボタン非表示
+  (dolist (btn '(tabbar-buffer-home-button
+                 tabbar-scroll-left-button
+                 tabbar-scroll-right-button))
+    (set btn (cons (cons "" nil) (cons "" nil)))
+    )
+
+  ;; タブ切替にマウスホイールを使用（有効：0、無効：-1）
+  (call-interactively 'tabbar-mwheel-mode -1)
+  (remove-hook 'tabbar-mode-hook      'tabbar-mwheel-follow)
+  (remove-hook 'mouse-wheel-mode-hook 'tabbar-mwheel-follow)
+
+  ;; タブグループを使用（有効：t、無効：nil）
+  (defvar tabbar-buffer-groups-function nil)
+  (setq tabbar-buffer-groups-function nil)
+
+  ;; タブの表示間隔
+  (defvar tabbar-separator nil)
+  (setq tabbar-separator '(1.0))
+
+  ;; タブ切り替え
+  (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
+  (global-set-key (kbd "C-q")     'tabbar-backward-tab))
+#+end_src
+*** saveplace カーソル位置を保存
+#+begin_src emacs-lisp
+(require 'saveplace)
+(save-place-mode 1) ;; Changed for Emacs 25
+#+end_src
+*** recentf
+#+begin_src emacs-lisp
+;; open recent files
+(use-package recentf
+  :config
+  (setq recentf-max-menu-items 400)
+  (setq recentf-exclude '(".recentf"))
+  (setq recentf-auto-cleanup 10)
+  (setq recentf-auto-save-timer
+        (run-with-idle-timer 30 t 'recentf-save-list))
+  (defun recentf-ido-find-file ()
+	"Find a recent file using Ido."
+	(interactive)
+	(let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+	  (when file
+		(find-file file))))
+  (recentf-mode 1)
+  :bind
+  ("C-x C-r" . recentf-ido-find-file))
+#+end_src
+*** ido-mode ファイル選択
+#+begin_src emacs-lisp
+(use-package ido
+  :init
+  (ido-mode t)
+  :config
+  (setq ido-enable-flex-matching t)
+  (when (fboundp 'ido-vertical-mode)
+	(ido-vertical-mode 1))
+  ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
+  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
+#+end_src
+*** M-xをidoで
+#+begin_src emacs-lisp
+(use-package smex
+  :ensure t
+  :config
+  (smex-initialize)
+  :bind
+  (("M-x" . smex)
+   ("M-X" . smex-major-mode-commands)))
+#+end_src
+*** cua-modeの設定 (矩形選択)
+#+begin_src emacs-lisp
+(cua-mode t) ; cua-modeをオン
+(setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
+#+end_src
+
 ** _sample
 #+begin_src emacs-lisp
 ; 
 #+end_src
+
