@@ -31,6 +31,22 @@
 
 (global-set-key "\C-x\C-b" 'buffer-menu)
 
+(tool-bar-mode -1)
+
+;; TABの表示幅。初期値は8
+(setq-default tab-width 4)
+
+;; modeline
+;; 行番号の表示
+(line-number-mode t)
+;; 列番号の表示
+(column-number-mode t)
+;; 時刻の表示
+(require 'time)
+(setq display-time-24hr-format t)
+(setq display-time-string-forms '(24-hours ":" minutes))
+(display-time-mode t)
+
 ;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
 (setq dired-dwim-target t)
 ;; ディレクトリを再帰的にコピーする
@@ -236,6 +252,95 @@
 
 (load-theme 'zenburn t)
 
+;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
+(setq make-backup-files   t)  ;; 自動バックアップの実行有無
+(setq version-control     t)  ;; バックアップファイルへの番号付与
+(setq kept-new-versions   3)  ;; 最新バックアップファイルの保持数
+(setq kept-old-versions   0)  ;; 最古バックアップファイルの保持数
+(setq delete-old-versions t)  ;; バックアップファイル削除の実行有無
+
+;; ファイルオープン時のバックアップ（~）の格納ディレクトリ
+(setq backup-directory-alist
+      (cons (cons "\\.*$" (expand-file-name "/tmp/emacsbk"))
+            backup-directory-alist))
+
+;; 編集中ファイルの自動バックアップ（有効：t、無効：nil）
+(setq backup-inhibited nil)
+
+;; 終了時に自動バックアップファイルを削除（有効：t、無効：nil）
+(setq delete-auto-save-files nil)
+
+;; 編集中ファイルのバックアップ（有効：t、無効：nil）
+(setq auto-save-list-file-name nil)
+(setq auto-save-list-file-prefix nil)
+
+;; 編集中ファイルのバックアップ間隔（秒）
+(setq auto-save-timeout 3)
+
+;; 編集中ファイルのバックアップ間隔（打鍵）
+(setq auto-save-interval 100)
+
+;; 編集中ファイル（##）の格納ディレクトリ
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "/tmp/emacsbk") t)))
+
+(setq create-lockfiles nil)
+
+;; スクロール時のカーソル位置を維持（有効：t、無効：nil）
+(setq scroll-preserve-screen-position t)
+
+;; スクロール開始の残り行数
+(setq scroll-margin 0)
+
+;; スクロール時の行数
+(setq scroll-conservatively 10000)
+
+;; スクロール時の行数（scroll-marginに影響せず）
+(setq scroll-step 0)
+
+;; 画面スクロール時の重複表示する行数
+(setq next-screen-context-lines 1)
+
+;; キー入力中の画面更新を抑止（有効：t、無効：nil）
+(setq redisplay-dont-pause t)
+
+;; recenter-top-bottomのポジション
+(setq recenter-positions '(middle top bottom))
+
+;; 横スクロール開始の残り列数
+(setq hscroll-margin 1)
+
+;; 横スクロール時の列数
+(setq hscroll-step 1)
+
+;; スクロールダウン
+(global-set-key (kbd "C-z") 'scroll-down)
+
+;; バッファの最後までスクロールダウン
+(defadvice scroll-down (around scroll-down activate compile)
+  (interactive)
+  (let (
+        (bgn-num (+ 1 (count-lines (point-min) (point))))
+        )
+    (if (< bgn-num (window-height))
+        (goto-char (point-min))
+      ad-do-it) ))
+
+;; バッファの先頭までスクロールアップ
+(defadvice scroll-up (around scroll-up activate compile)
+  (interactive)
+  (let (
+        (bgn-num (+ 1 (count-lines (point-min) (point))))
+        (end-num nil)
+        )
+    (save-excursion
+      (goto-char (point-max))
+      (setq end-num (+ 1 (count-lines (point-min) (point))))
+      )
+    (if (< (- (- end-num bgn-num) (window-height)) 0)
+        (goto-char (point-max))
+      ad-do-it) ))
+
 ;; 大文字・小文字を区別しないでサーチ（有効：t、無効：nil）
 (setq-default case-fold-search t)
 
@@ -360,4 +465,18 @@
   (load-library "migemo")
   (migemo-init))
 
-;
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t))
+
+;; paren-mode：対応する括弧を強調して表示する
+(setq show-paren-delay 0.1) ; 表示までの秒数。初期値は0.125
+(show-paren-mode t) ; 有効化
+
+;; parenのスタイル: expressionは括弧内も強調表示
+(setq show-paren-style 'mixed)
+;; フェイスを変更する
+(set-face-background 'show-paren-match-face nil)
+(set-face-underline-p 'show-paren-match-face "blue")
+
+

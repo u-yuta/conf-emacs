@@ -1,6 +1,7 @@
 * Config
 
-** site-lisp
+** Path
+*** site-lisp
 #+begin_src emacs-lisp
 (let ( (default-directory
          (file-name-as-directory (concat user-emacs-directory "site-lisp")))
@@ -28,7 +29,21 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (unless (require 'use-package nil t)
   (defmacro use-package (&rest args)))
 #+end_src
-** キーバインド
+** basic
+*** リージョンを削除できるように
+#+begin_src emacs-lisp
+(delete-selection-mode t)
+#+end_src
+*** buffer選択画面をアクティブウィンドウに表示する。
+#+begin_src emacs-lisp
+(global-set-key "\C-x\C-b" 'buffer-menu)
+#+end_src
+
+*** 警告音の代わりに画面フラッシュ
+#+begin_src emacs-lisp
+(setq visible-bell t)
+#+end_src
+*** 編集
 #+begin_src emacs-lisp
 ;; C-hでbackspace
 (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
@@ -37,19 +52,10 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (global-set-key [home] 'beginning-of-buffer)
 (global-set-key [end] 'end-of-buffer)
 #+end_src
-
-*** 警告音の代わりに画面フラッシュ
+*** TAB幅
 #+begin_src emacs-lisp
-(setq visible-bell t)
-#+end_src
-** basic
-*** リージョンを削除できるように
-  #+begin_src emacs-lisp
-  (delete-selection-mode t)
-  #+end_src
-*** buffer選択画面をアクティブウィンドウに表示する。
-#+begin_src emacs-lisp
-(global-set-key "\C-x\C-b" 'buffer-menu)
+;; TABの表示幅。初期値は8
+(setq-default tab-width 4)
 #+end_src
 ** dired
 #+begin_src emacs-lisp
@@ -149,7 +155,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ;; フォントサイズ リセット
 (global-set-key (kbd "M-0") '(lambda() (interactive) (text-scale-set 0)))
 #+end_src
-** Screen
+** 画面表示
 *** frame
 #+begin_src emacs-lisp
 (setq default-frame-alist
@@ -279,6 +285,147 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 *** theme
 #+begin_src emacs-lisp
 (load-theme 'zenburn t)
+#+end_src
+*** ツールバーを非表示
+#+begin_src emacs-lisp
+(tool-bar-mode -1)
+#+end_src
+*** modeline
+#+begin_src emacs-lisp
+;; modeline
+;; 行番号の表示
+(line-number-mode t)
+;; 列番号の表示
+(column-number-mode t)
+;; 時刻の表示
+(require 'time)
+(setq display-time-24hr-format t)
+(setq display-time-string-forms '(24-hours ":" minutes))
+(display-time-mode t)
+#+end_src
+** show-paren-mode
+#+begin_src emacs-lisp
+;; paren-mode：対応する括弧を強調して表示する
+(setq show-paren-delay 0.1) ; 表示までの秒数。初期値は0.125
+(show-paren-mode t) ; 有効化
+
+;; parenのスタイル: expressionは括弧内も強調表示
+(setq show-paren-style 'mixed)
+;; フェイスを変更する
+(set-face-background 'show-paren-match-face nil)
+(set-face-underline-p 'show-paren-match-face "blue")
+
+#+end_src
+*** redo, undo
+;; redo+
+(use-package redo+
+  :bind ("C-?" . redo))
+;; undo-hist
+(use-package undohist
+  :config (undohist-initialize))
+;; undo-tree
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+;; point-undo
+(use-package point-undo
+  :bind (("M-[" . point-undo)
+		 ("M-]" . point-redo)))
+** backup
+#+begin_src emacs-lisp
+;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
+(setq make-backup-files   t)  ;; 自動バックアップの実行有無
+(setq version-control     t)  ;; バックアップファイルへの番号付与
+(setq kept-new-versions   3)  ;; 最新バックアップファイルの保持数
+(setq kept-old-versions   0)  ;; 最古バックアップファイルの保持数
+(setq delete-old-versions t)  ;; バックアップファイル削除の実行有無
+
+;; ファイルオープン時のバックアップ（~）の格納ディレクトリ
+(setq backup-directory-alist
+      (cons (cons "\\.*$" (expand-file-name "/tmp/emacsbk"))
+            backup-directory-alist))
+
+;; 編集中ファイルの自動バックアップ（有効：t、無効：nil）
+(setq backup-inhibited nil)
+
+;; 終了時に自動バックアップファイルを削除（有効：t、無効：nil）
+(setq delete-auto-save-files nil)
+
+;; 編集中ファイルのバックアップ（有効：t、無効：nil）
+(setq auto-save-list-file-name nil)
+(setq auto-save-list-file-prefix nil)
+
+;; 編集中ファイルのバックアップ間隔（秒）
+(setq auto-save-timeout 3)
+
+;; 編集中ファイルのバックアップ間隔（打鍵）
+(setq auto-save-interval 100)
+
+;; 編集中ファイル（##）の格納ディレクトリ
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "/tmp/emacsbk") t)))
+#+end_src
+*** ロックファイルを生成
+#+begin_src emacs-lisp
+(setq create-lockfiles nil)
+#+end_src
+** scroll
+#+begin_src emacs-lisp
+;; スクロール時のカーソル位置を維持（有効：t、無効：nil）
+(setq scroll-preserve-screen-position t)
+
+;; スクロール開始の残り行数
+(setq scroll-margin 0)
+
+;; スクロール時の行数
+(setq scroll-conservatively 10000)
+
+;; スクロール時の行数（scroll-marginに影響せず）
+(setq scroll-step 0)
+
+;; 画面スクロール時の重複表示する行数
+(setq next-screen-context-lines 1)
+
+;; キー入力中の画面更新を抑止（有効：t、無効：nil）
+(setq redisplay-dont-pause t)
+
+;; recenter-top-bottomのポジション
+(setq recenter-positions '(middle top bottom))
+
+;; 横スクロール開始の残り列数
+(setq hscroll-margin 1)
+
+;; 横スクロール時の列数
+(setq hscroll-step 1)
+
+;; スクロールダウン
+(global-set-key (kbd "C-z") 'scroll-down)
+
+;; バッファの最後までスクロールダウン
+(defadvice scroll-down (around scroll-down activate compile)
+  (interactive)
+  (let (
+        (bgn-num (+ 1 (count-lines (point-min) (point))))
+        )
+    (if (< bgn-num (window-height))
+        (goto-char (point-min))
+      ad-do-it) ))
+
+;; バッファの先頭までスクロールアップ
+(defadvice scroll-up (around scroll-up activate compile)
+  (interactive)
+  (let (
+        (bgn-num (+ 1 (count-lines (point-min) (point))))
+        (end-num nil)
+        )
+    (save-excursion
+      (goto-char (point-max))
+      (setq end-num (+ 1 (count-lines (point-min) (point))))
+      )
+    (if (< (- (- end-num bgn-num) (window-height)) 0)
+        (goto-char (point-max))
+      ad-do-it) ))
+
 #+end_src
 ** isearch
 #+begin_src emacs-lisp
@@ -425,8 +572,14 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
   (load-library "migemo")
   (migemo-init))
 #+end_src
+*** volatile-highlights
+yankやundoで変化したところを一時的にハイライト
+#+begin_src emacs-lisp
+(use-package volatile-highlights
+  :config
+  (volatile-highlights-mode t))
+#+end_src
 ** _sample
 #+begin_src emacs-lisp
-; 
-#+end_src
 
+#+end_src
