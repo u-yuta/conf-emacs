@@ -119,6 +119,23 @@
 ;; フォントサイズ リセット
 (global-set-key (kbd "M-0") '(lambda() (interactive) (text-scale-set 0)))
 
+(setq default-frame-alist
+      (append '((width                . 95)  ; フレーム幅
+                (height               . 55 ) ; フレーム高
+                (left                 . 200 ) ; 配置左位置
+                (top                  . 20 ) ; 配置上位置
+                (line-spacing         . 0  ) ; 文字間隔
+                (left-fringe          . 10 ) ; 左フリンジ幅
+                (right-fringe         . 11 ) ; 右フリンジ幅
+                (menu-bar-lines       . 1  ) ; メニューバー
+                (tool-bar-lines       . 1  ) ; ツールバー
+                (vertical-scroll-bars . 1  ) ; スクロールバー
+                (scroll-bar-width     . 17 ) ; スクロールバー幅
+                (cursor-type          . box) ; カーソル種別
+                (alpha                . 100) ; 透明度
+                ) default-frame-alist) )
+(setq initial-frame-alist default-frame-alist)
+
 ;; フレーム タイトル
 (setq frame-title-format
           (format "%%f - Emacs %s@%s" emacs-version system-name))
@@ -180,6 +197,9 @@
 (setq eol-mnemonic-unix      ":Unx ")
 (setq eol-mnemonic-undecided ":??? ")
 
+;; ウィンドウ縦分割時のバッファ画面外文字の切り詰め表示（有効：t、無効：nil）
+(setq truncate-partial-width-windows t)
+
 ;; 同一バッファ名にディレクトリ付与
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
@@ -213,6 +233,8 @@
 
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
+
+(load-theme 'zenburn t)
 
 ;; 大文字・小文字を区別しないでサーチ（有効：t、無効：nil）
 (setq-default case-fold-search t)
@@ -325,5 +347,17 @@
 
 (cua-mode t) ; cua-modeをオン
 (setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
+
+(use-package migemo
+  :config
+  (setq exec-path (append exec-path '("C:\\app\\cmigemo-default-win64")))
+  (setq migemo-dictionary "C:/app/cmigemo-default-win64/dict/utf-8/migemo-dict")
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs"))
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (load-library "migemo")
+  (migemo-init))
 
 ;
