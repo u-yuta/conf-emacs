@@ -593,6 +593,25 @@ yankやundoで変化したところを一時的にハイライト
   :config
   (volatile-highlights-mode t))
 #+end_src
+
+** magit
+Windows Gitを使用する場合の設定。
+設定済みの.gitconfigが読み込まれない場合は、.gitconfigをemacsの~にコピーする必要がある。
+#+begin_src emacs-lisp
+(use-package magit
+  :config
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (setq magit-git-executable "C:/Program Files/Git/bin/git.exe")
+  )
+#+end_src
+** Languages
+*** Markdown
+#+begin_src emacs-lisp
+;; markdown-mode
+(use-package markdown-mode
+   :mode (("\\.md\\'" . markdown-mode))
+   )
+#+end_src
 ** _sample
 #+begin_src emacs-lisp
 
