@@ -490,12 +490,34 @@
  )
 #+end_src
 ** org-mode
+*** 最新版を使用する。
+#+begin_src emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/elisp/lisp")
+(add-to-list 'load-path "~/.emacs.d/elisp/contrib/lisp" t)
+#+end_src
+*** src block
 #+begin_src emacs-lisp
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)
 
 (setq org-src-tab-acts-natively t)
 #+end_src
+*** キーバインド
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+#+end_src
+
+*** ファイルの場所
+#+begin_src emacs-lisp
+(setq org-directory "~/git/org")
+(setq org-default-notes-file "~/git/org/refile.org")
+(setq org-agenda-files (quote ("~/git/org")))
+#+end_src
+
 ** packages
 
 *** tabbar タブ表示
@@ -596,7 +618,8 @@ yankやundoで変化したところを一時的にハイライト
 
 ** magit
 Windows Gitを使用する場合の設定。
-設定済みの.gitconfigが読み込まれない場合は、.gitconfigをemacsの~にコピーする必要がある。
+.gitconfigを置く場所がWindows Gitと異なることに注意。
+（emacsでの~を見に行っている様子。）
 #+begin_src emacs-lisp
 (use-package magit
   :config
@@ -604,6 +627,7 @@ Windows Gitを使用する場合の設定。
   (setq magit-git-executable "C:/Program Files/Git/bin/git.exe")
   )
 #+end_src
+
 ** Languages
 *** Markdown
 #+begin_src emacs-lisp

@@ -14,32 +14,44 @@
 (package-initialize)
 (require 'use-package)
 
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(setq use-package-verbose t)
+; パッケージが無ければ自動インストール
+(setq use-package-always-ensure t)
+(require 'use-package)
+
 ; 何もしないマクロ定義
 (unless (require 'use-package nil t)
   (defmacro use-package (&rest args)))
 
 (delete-selection-mode t)
 
-(global-set-key "\C-x\C-b" 'buffer-menu)
-
-(setq visible-bell t)
-
-;; C-hでbackspace
 (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 
-;; Home, End で、バッファの先頭、終端
 (global-set-key [home] 'beginning-of-buffer)
 (global-set-key [end] 'end-of-buffer)
 
 ;; TABの表示幅。初期値は8
 (setq-default tab-width 4)
 
-;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
-(setq dired-dwim-target t)
-;; ディレクトリを再帰的にコピーする
-(setq dired-recursive-copies 'always)
-;; diredバッファでC-sした時にファイル名だけにマッチするように
-(setq dired-isearch-filenames t)
+(cua-mode t) ; cua-modeをオン
+(setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
+
+;; redo+
+(use-package redo+
+  :bind ("C-?" . redo))
+;; undo-hist
+(use-package undohist
+  :config (undohist-initialize))
+;; undo-tree
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+;; point-undo
+(use-package point-undo
+  :bind (("M-[" . point-undo)
+                 ("M-]" . point-redo)))
 
 ;; デフォルトの文字コード
 (set-default-coding-systems 'utf-8-dos)
@@ -61,27 +73,24 @@
                       'katakana-jisx0201 'iso-8859-1 'cp1252 'unicode)
 (set-coding-system-priority 'utf-8 'euc-jp 'iso-2022-jp 'cp932)
 
-; GitHub - chuntaro/NTEmacs64: Windows 版 Emacs (通称 NTEmacs) の 64bit 版
-; https://github.com/chuntaro/NTEmacs64
-
 ;; (set-language-environment "UTF-8") ;; UTF-8 でも問題ないので適宜コメントアウトしてください
 (setq default-input-method "W32-IME")
 (setq-default w32-ime-mode-line-state-indicator "[--]")
 (setq w32-ime-mode-line-state-indicator-list '("[--]" "[あ]" "[--]"))
 (w32-ime-initialize)
-;; 日本語入力時にカーソルの色を変える設定 (色は適宜変えてください)
+
 (add-hook 'w32-ime-on-hook '(lambda () (set-cursor-color "coral4")))
 (add-hook 'w32-ime-off-hook '(lambda () (set-cursor-color "black")))
 
 ;; ミニバッファに移動した際は最初に日本語入力が無効な状態にする
 (add-hook 'minibuffer-setup-hook 'deactivate-input-method)
-
+ 
 ;; isearch に移行した際に日本語入力を無効にする
 (add-hook 'isearch-mode-hook '(lambda ()
                                 (deactivate-input-method)
                                 (setq w32-ime-composition-window (minibuffer-window))))
 (add-hook 'isearch-mode-end-hook '(lambda () (setq w32-ime-composition-window nil)))
-
+ 
 ;; helm 使用中に日本語入力を無効にする
 (advice-add 'helm :around '(lambda (orig-fun &rest args)
                              (let ((select-window-functions nil)
@@ -143,19 +152,23 @@
 (setq frame-title-format
           (format "%%f - Emacs %s@%s" emacs-version system-name))
 
-;; 初期画面の非表示（有効：t、無効：nil）
-(setq inhibit-startup-message nil)
-(setq inhibit-startup-screen t)
 
 ;; フルスクリーン化
 (global-set-key (kbd "<M-return>") 'toggle-frame-fullscreen)
 
+;; 初期画面の非表示（有効：t、無効：nil）
+(setq inhibit-startup-message nil)
+(setq inhibit-startup-screen t)
+
+(tool-bar-mode -1)
+
+(setq visible-bell t)
+
 ;; 行番号の表示（有効：t、無効：nil）
 (line-number-mode t)
-
 ;; 列番号の表示（有効：t、無効：nil）
 (column-number-mode t)
-
+ 
 ;; モードライン カスタマイズ
 (setq-default
  mode-line-format
@@ -189,16 +202,22 @@
 (coding-system-put 'cp932-dos :mnemonic ?P)
 (coding-system-put 'cp932-unix :mnemonic ?P)
 (coding-system-put 'cp932-mac :mnemonic ?P)
-
+ 
 ;; UTF-8エンコードの表記変更
 (coding-system-put 'utf-8 :mnemonic ?U)
 (coding-system-put 'utf-8-with-signature :mnemonic ?u)
-
+ 
 ;; 改行コードの表記追加
 (setq eol-mnemonic-dos       ":Dos ")
 (setq eol-mnemonic-mac       ":Mac ")
 (setq eol-mnemonic-unix      ":Unx ")
 (setq eol-mnemonic-undecided ":??? ")
+
+;; 時刻の表示
+(require 'time)
+(setq display-time-24hr-format t)
+(setq display-time-string-forms '(24-hours ":" minutes))
+(display-time-mode t)
 
 ;; ウィンドウ縦分割時のバッファ画面外文字の切り詰め表示（有効：t、無効：nil）
 (setq truncate-partial-width-windows t)
@@ -239,19 +258,6 @@
 
 (load-theme 'hc-zenburn t)
 
-(tool-bar-mode -1)
-
-;; modeline
-;; 行番号の表示
-(line-number-mode t)
-;; 列番号の表示
-(column-number-mode t)
-;; 時刻の表示
-(require 'time)
-(setq display-time-24hr-format t)
-(setq display-time-string-forms '(24-hours ":" minutes))
-(display-time-mode t)
-
 ;; paren-mode：対応する括弧を強調して表示する
 (setq show-paren-delay 0.1) ; 表示までの秒数。初期値は0.125
 (show-paren-mode t) ; 有効化
@@ -261,40 +267,6 @@
 ;; フェイスを変更する
 (set-face-background 'show-paren-match-face nil)
 (set-face-underline-p 'show-paren-match-face "blue")
-
-;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
-(setq make-backup-files   t)  ;; 自動バックアップの実行有無
-(setq version-control     t)  ;; バックアップファイルへの番号付与
-(setq kept-new-versions   3)  ;; 最新バックアップファイルの保持数
-(setq kept-old-versions   0)  ;; 最古バックアップファイルの保持数
-(setq delete-old-versions t)  ;; バックアップファイル削除の実行有無
-
-;; ファイルオープン時のバックアップ（~）の格納ディレクトリ
-(setq backup-directory-alist
-      (cons (cons "\\.*$" (expand-file-name "/tmp/emacsbk"))
-            backup-directory-alist))
-
-;; 編集中ファイルの自動バックアップ（有効：t、無効：nil）
-(setq backup-inhibited nil)
-
-;; 終了時に自動バックアップファイルを削除（有効：t、無効：nil）
-(setq delete-auto-save-files nil)
-
-;; 編集中ファイルのバックアップ（有効：t、無効：nil）
-(setq auto-save-list-file-name nil)
-(setq auto-save-list-file-prefix nil)
-
-;; 編集中ファイルのバックアップ間隔（秒）
-(setq auto-save-timeout 3)
-
-;; 編集中ファイルのバックアップ間隔（打鍵）
-(setq auto-save-interval 100)
-
-;; 編集中ファイル（##）の格納ディレクトリ
-(setq auto-save-file-name-transforms
-      `((".*" ,(expand-file-name "/tmp/emacsbk") t)))
-
-(setq create-lockfiles nil)
 
 ;; スクロール時のカーソル位置を維持（有効：t、無効：nil）
 (setq scroll-preserve-screen-position t)
@@ -351,6 +323,52 @@
         (goto-char (point-max))
       ad-do-it) ))
 
+(require 'saveplace)
+(save-place-mode 1) ;; Changed for Emacs 25
+
+(global-set-key "\C-x\C-b" 'buffer-menu)
+
+;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
+(setq dired-dwim-target t)
+;; ディレクトリを再帰的にコピーする
+(setq dired-recursive-copies 'always)
+;; diredバッファでC-sした時にファイル名だけにマッチするように
+(setq dired-isearch-filenames t)
+
+;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
+(setq make-backup-files   t)  ;; 自動バックアップの実行有無
+(setq version-control     t)  ;; バックアップファイルへの番号付与
+(setq kept-new-versions   3)  ;; 最新バックアップファイルの保持数
+(setq kept-old-versions   0)  ;; 最古バックアップファイルの保持数
+(setq delete-old-versions t)  ;; バックアップファイル削除の実行有無
+
+;; ファイルオープン時のバックアップ（~）の格納ディレクトリ
+(setq backup-directory-alist
+      (cons (cons "\\.*$" (expand-file-name "/tmp/emacsbk"))
+            backup-directory-alist))
+
+;; 編集中ファイルの自動バックアップ（有効：t、無効：nil）
+(setq backup-inhibited nil)
+
+;; 終了時に自動バックアップファイルを削除（有効：t、無効：nil）
+(setq delete-auto-save-files nil)
+
+;; 編集中ファイルのバックアップ（有効：t、無効：nil）
+(setq auto-save-list-file-name nil)
+(setq auto-save-list-file-prefix nil)
+
+;; 編集中ファイルのバックアップ間隔（秒）
+(setq auto-save-timeout 3)
+
+;; 編集中ファイルのバックアップ間隔（打鍵）
+(setq auto-save-interval 100)
+
+;; 編集中ファイル（##）の格納ディレクトリ
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "/tmp/emacsbk") t)))
+
+(setq create-lockfiles nil)
+
 ;; 大文字・小文字を区別しないでサーチ（有効：t、無効：nil）
 (setq-default case-fold-search t)
 
@@ -387,10 +405,22 @@
  '(lambda() (setq w32-ime-composition-window nil))
  )
 
+(add-to-list 'load-path "~/.emacs.d/elisp/lisp")
+(add-to-list 'load-path "~/.emacs.d/elisp/contrib/lisp" t)
+
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)
 
 (setq org-src-tab-acts-natively t)
+
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c b") 'org-iswitchb)
+
+(setq org-directory "~/git/org")
+(setq org-default-notes-file "~/git/org/refile.org")
+(setq org-agenda-files (quote ("~/git/org")))
 
 (use-package tabbar
   :config
@@ -421,9 +451,6 @@
   (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
   (global-set-key (kbd "C-q")     'tabbar-backward-tab))
 
-(require 'saveplace)
-(save-place-mode 1) ;; Changed for Emacs 25
-
 ;; open recent files
 (use-package recentf
   :config
@@ -448,7 +475,7 @@
   :config
   (setq ido-enable-flex-matching t)
   (when (fboundp 'ido-vertical-mode)
-        (ido-vertical-mode 1))
+      (ido-vertical-mode 1))
   ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
   (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
 
@@ -459,9 +486,6 @@
   :bind
   (("M-x" . smex)
    ("M-X" . smex-major-mode-commands)))
-
-(cua-mode t) ; cua-modeをオン
-(setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
 
 (use-package migemo
   :config
@@ -478,5 +502,16 @@
 (use-package volatile-highlights
   :config
   (volatile-highlights-mode t))
+
+(use-package magit
+  :config
+  (global-set-key (kbd "C-x g") 'magit-status)
+  (setq magit-git-executable "C:/Program Files/Git/bin/git.exe")
+  )
+
+;; markdown-mode
+(use-package markdown-mode
+   :mode (("\\.md\\'" . markdown-mode))
+   )
 
 
