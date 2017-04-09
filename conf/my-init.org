@@ -284,7 +284,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 #+end_src
 *** theme
 #+begin_src emacs-lisp
-(load-theme 'zenburn t)
+(load-theme 'hc-zenburn t)
 #+end_src
 *** ツールバーを非表示
 #+begin_src emacs-lisp

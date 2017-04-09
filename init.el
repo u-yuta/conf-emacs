@@ -1,4 +1,5 @@
 
+
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
@@ -19,7 +20,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (volatile-highlights zenburn-theme migemo ido-vertical-mode tabbar use-package))))
+	(hc-zenburn-theme volatile-highlights zenburn-theme migemo ido-vertical-mode tabbar use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
