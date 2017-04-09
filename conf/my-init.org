@@ -23,48 +23,61 @@
 (require 'use-package)
 #+end_src
 *** use-package
-use-package ライブラリが存在しない場合に、init.el の評価が途中で失敗することを回避。
-#+begin_src emacs-lisp
-; 何もしないマクロ定義
-(unless (require 'use-package nil t)
-  (defmacro use-package (&rest args)))
-#+end_src
-** basic
+- use-packageを使用する。
+  #+begin_src emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  (setq use-package-verbose t)
+  ; パッケージが無ければ自動インストール
+  (setq use-package-always-ensure t)
+  (require 'use-package)
+  #+end_src
+- use-package ライブラリが存在しない場合に、init.el の評価が途中で失敗することを回避。
+  #+begin_src emacs-lisp
+  ; 何もしないマクロ定義
+  (unless (require 'use-package nil t)
+    (defmacro use-package (&rest args)))
+  #+end_src
+** 編集
 *** リージョンを削除できるように
 #+begin_src emacs-lisp
 (delete-selection-mode t)
 #+end_src
-*** buffer選択画面をアクティブウィンドウに表示する。
+*** C-hでbackspace
 #+begin_src emacs-lisp
-(global-set-key "\C-x\C-b" 'buffer-menu)
-#+end_src
-
-*** 警告音の代わりに画面フラッシュ
-#+begin_src emacs-lisp
-(setq visible-bell t)
-#+end_src
-*** 編集
-#+begin_src emacs-lisp
-;; C-hでbackspace
 (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
-
-;; Home, End で、バッファの先頭、終端
+#+end_src
+*** Home, End で、バッファの先頭、終端
+#+begin_src emacs-lisp
 (global-set-key [home] 'beginning-of-buffer)
 (global-set-key [end] 'end-of-buffer)
 #+end_src
-*** TAB幅
+*** TAB幅設定
 #+begin_src emacs-lisp
 ;; TABの表示幅。初期値は8
 (setq-default tab-width 4)
 #+end_src
-** dired
+*** cua-modeの設定 (矩形選択)
 #+begin_src emacs-lisp
-;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
-(setq dired-dwim-target t)
-;; ディレクトリを再帰的にコピーする
-(setq dired-recursive-copies 'always)
-;; diredバッファでC-sした時にファイル名だけにマッチするように
-(setq dired-isearch-filenames t)
+(cua-mode t) ; cua-modeをオン
+(setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
+#+end_src
+*** redo, undo
+#+begin_src emacs-lisp
+;; redo+
+(use-package redo+
+  :bind ("C-?" . redo))
+;; undo-hist
+(use-package undohist
+  :config (undohist-initialize))
+;; undo-tree
+(use-package undo-tree
+  :config
+  (global-undo-tree-mode))
+;; point-undo
+(use-package point-undo
+  :bind (("M-[" . point-undo)
+		 ("M-]" . point-redo)))
 #+end_src
 ** 日本語
 *** 文字コード
@@ -88,43 +101,47 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (set-charset-priority 'ascii 'japanese-jisx0208 'latin-jisx0201
                       'katakana-jisx0201 'iso-8859-1 'cp1252 'unicode)
 (set-coding-system-priority 'utf-8 'euc-jp 'iso-2022-jp 'cp932)
-
 #+end_src
 *** 日本語入力
-#+begin_src emacs-lisp
-; GitHub - chuntaro/NTEmacs64: Windows 版 Emacs (通称 NTEmacs) の 64bit 版
-; https://github.com/chuntaro/NTEmacs64
-
-;; (set-language-environment "UTF-8") ;; UTF-8 でも問題ないので適宜コメントアウトしてください
-(setq default-input-method "W32-IME")
-(setq-default w32-ime-mode-line-state-indicator "[--]")
-(setq w32-ime-mode-line-state-indicator-list '("[--]" "[あ]" "[--]"))
-(w32-ime-initialize)
-;; 日本語入力時にカーソルの色を変える設定 (色は適宜変えてください)
-(add-hook 'w32-ime-on-hook '(lambda () (set-cursor-color "coral4")))
-(add-hook 'w32-ime-off-hook '(lambda () (set-cursor-color "black")))
-
-;; ミニバッファに移動した際は最初に日本語入力が無効な状態にする
-(add-hook 'minibuffer-setup-hook 'deactivate-input-method)
-
-;; isearch に移行した際に日本語入力を無効にする
-(add-hook 'isearch-mode-hook '(lambda ()
-                                (deactivate-input-method)
-                                (setq w32-ime-composition-window (minibuffer-window))))
-(add-hook 'isearch-mode-end-hook '(lambda () (setq w32-ime-composition-window nil)))
-
-;; helm 使用中に日本語入力を無効にする
-(advice-add 'helm :around '(lambda (orig-fun &rest args)
-                             (let ((select-window-functions nil)
-                                   (w32-ime-composition-window (minibuffer-window)))
-                               (deactivate-input-method)
-                               (apply orig-fun args))))
-
-; USキーボードで日本語入力のON/OFFを切り替えるのに"Alt-`"
-; を使うとメッセージが出るのを抑止する。
-(global-set-key [M-kanji] 'ignore)
-#+end_src
-*** Fonts
+- 日本語IME設定, [[https://github.com/chuntaro/NTEmacs64][GitHub - chuntaro/NTEmacs64: Windows版Emacs(通称 NTEmacs)の64bit版]]
+  #+begin_src emacs-lisp
+  ;; (set-language-environment "UTF-8") ;; UTF-8 でも問題ないので適宜コメントアウトしてください
+  (setq default-input-method "W32-IME")
+  (setq-default w32-ime-mode-line-state-indicator "[--]")
+  (setq w32-ime-mode-line-state-indicator-list '("[--]" "[あ]" "[--]"))
+  (w32-ime-initialize)
+  #+end_src
+- 日本語入力時にカーソルの色を変える設定 (色は適宜変えてください)
+  #+begin_src emacs-lisp
+  (add-hook 'w32-ime-on-hook '(lambda () (set-cursor-color "coral4")))
+  (add-hook 'w32-ime-off-hook '(lambda () (set-cursor-color "black")))
+  #+end_src
+- 状況に応じて日本語入力設定を無効化
+  #+begin_src emacs-lisp
+  ;; ミニバッファに移動した際は最初に日本語入力が無効な状態にする
+  (add-hook 'minibuffer-setup-hook 'deactivate-input-method)
+   
+  ;; isearch に移行した際に日本語入力を無効にする
+  (add-hook 'isearch-mode-hook '(lambda ()
+                                  (deactivate-input-method)
+                                  (setq w32-ime-composition-window (minibuffer-window))))
+  (add-hook 'isearch-mode-end-hook '(lambda () (setq w32-ime-composition-window nil)))
+   
+  ;; helm 使用中に日本語入力を無効にする
+  (advice-add 'helm :around '(lambda (orig-fun &rest args)
+                               (let ((select-window-functions nil)
+                                     (w32-ime-composition-window (minibuffer-window)))
+                                 (deactivate-input-method)
+                                 (apply orig-fun args))))
+  #+end_src
+- USキーボード対応
+  #+begin_src emacs-lisp
+  ; USキーボードで日本語入力のON/OFFを切り替えるのに"Alt-`"
+  ; を使うとメッセージが出るのを抑止する。
+  (global-set-key [M-kanji] 'ignore)
+  #+end_src
+** 画面表示
+*** フォント
 #+begin_src emacs-lisp
 ;; デフォルト フォント
 ;; (set-face-attribute 'default nil :family "Migu 1M" :height 110)
@@ -145,7 +162,9 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ;; (set-face-attribute 'tooltip nil :family "Migu 1M" :height 90)
 ;(set-face-font 'tooltip "Migu 1M-9:antialias=standard")
 (set-face-font 'tooltip "Myrica M-9:antialias=natural")
-
+#+end_src
+*** フォントサイズ調整
+#+begin_src emacs-lisp
 ;; フォントサイズ調整
 (global-set-key (kbd "C-<wheel-up>")   '(lambda() (interactive) (text-scale-increase 1)))
 (global-set-key (kbd "C-=")            '(lambda() (interactive) (text-scale-increase 1)))
@@ -155,8 +174,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ;; フォントサイズ リセット
 (global-set-key (kbd "M-0") '(lambda() (interactive) (text-scale-set 0)))
 #+end_src
-** 画面表示
-*** frame
+*** フレーム
 #+begin_src emacs-lisp
 (setq default-frame-alist
       (append '((width                . 95)  ; フレーム幅
@@ -179,68 +197,87 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (setq frame-title-format
 	  (format "%%f - Emacs %s@%s" emacs-version system-name))
 
-;; 初期画面の非表示（有効：t、無効：nil）
-(setq inhibit-startup-message nil)
-(setq inhibit-startup-screen t)
 
 ;; フルスクリーン化
 (global-set-key (kbd "<M-return>") 'toggle-frame-fullscreen)
-
 #+end_src
-*** mode line
+*** 初期画面を非表示
 #+begin_src emacs-lisp
-;; 行番号の表示（有効：t、無効：nil）
-(line-number-mode t)
-
-;; 列番号の表示（有効：t、無効：nil）
-(column-number-mode t)
-
-;; モードライン カスタマイズ
-(setq-default
- mode-line-format
- `(
-   ""
-   w32-ime-mode-line-state-indicator
-   " "
-   mode-line-mule-info
-   mode-line-modified
-   mode-line-frame-identification
-   mode-line-buffer-identification
-   " "
-   global-mode-string
-   " %[("
-   mode-name
-   mode-line-process
-   "%n"
-   ")%] "
-   (which-func-mode ("" which-func-format " "))
-   (line-number-mode
-    (:eval
-     (format "L%%l/L%d " (count-lines (point-max) 1) )))
-   (column-number-mode " C%c ")
-   (-3 . "%p")
-   )
- )
-(setq mode-line-frame-identification " ")
-
-;; cp932エンコードの表記変更
-(coding-system-put 'cp932 :mnemonic ?P)
-(coding-system-put 'cp932-dos :mnemonic ?P)
-(coding-system-put 'cp932-unix :mnemonic ?P)
-(coding-system-put 'cp932-mac :mnemonic ?P)
-
-;; UTF-8エンコードの表記変更
-(coding-system-put 'utf-8 :mnemonic ?U)
-(coding-system-put 'utf-8-with-signature :mnemonic ?u)
-
-;; 改行コードの表記追加
-(setq eol-mnemonic-dos       ":Dos ")
-(setq eol-mnemonic-mac       ":Mac ")
-(setq eol-mnemonic-unix      ":Unx ")
-(setq eol-mnemonic-undecided ":??? ") 
-
+;; 初期画面の非表示（有効：t、無効：nil）
+(setq inhibit-startup-message nil)
+(setq inhibit-startup-screen t)
 #+end_src
-*** buffer
+*** ツールバーを非表示
+#+begin_src emacs-lisp
+(tool-bar-mode -1)
+#+end_src
+*** 警告音の代わりに画面フラッシュ
+  #+begin_src emacs-lisp
+  (setq visible-bell t)
+  #+end_src
+*** モードライン表示
+- モードラインの設定
+  #+begin_src emacs-lisp
+  ;; 行番号の表示（有効：t、無効：nil）
+  (line-number-mode t)
+  ;; 列番号の表示（有効：t、無効：nil）
+  (column-number-mode t)
+   
+  ;; モードライン カスタマイズ
+  (setq-default
+   mode-line-format
+   `(
+     ""
+     w32-ime-mode-line-state-indicator
+     " "
+     mode-line-mule-info
+     mode-line-modified
+     mode-line-frame-identification
+     mode-line-buffer-identification
+     " "
+     global-mode-string
+     " %[("
+     mode-name
+     mode-line-process
+     "%n"
+     ")%] "
+     (which-func-mode ("" which-func-format " "))
+     (line-number-mode
+      (:eval
+       (format "L%%l/L%d " (count-lines (point-max) 1) )))
+     (column-number-mode " C%c ")
+     (-3 . "%p")
+     )
+   )
+  (setq mode-line-frame-identification " ")
+  #+end_src
+- 文字・改行コード表示のカスタマイズ
+  #+begin_src emacs-lisp
+  ;; cp932エンコードの表記変更
+  (coding-system-put 'cp932 :mnemonic ?P)
+  (coding-system-put 'cp932-dos :mnemonic ?P)
+  (coding-system-put 'cp932-unix :mnemonic ?P)
+  (coding-system-put 'cp932-mac :mnemonic ?P)
+   
+  ;; UTF-8エンコードの表記変更
+  (coding-system-put 'utf-8 :mnemonic ?U)
+  (coding-system-put 'utf-8-with-signature :mnemonic ?u)
+   
+  ;; 改行コードの表記追加
+  (setq eol-mnemonic-dos       ":Dos ")
+  (setq eol-mnemonic-mac       ":Mac ")
+  (setq eol-mnemonic-unix      ":Unx ")
+  (setq eol-mnemonic-undecided ":??? ") 
+  #+end_src
+-モードラインに時刻表示
+  #+begin_src emacs-lisp
+  ;; 時刻の表示
+  (require 'time)
+  (setq display-time-24hr-format t)
+  (setq display-time-string-forms '(24-hours ":" minutes))
+  (display-time-mode t)
+  #+end_src
+*** バッファ表示
 #+begin_src emacs-lisp
 ;; ウィンドウ縦分割時のバッファ画面外文字の切り詰め表示（有効：t、無効：nil）
 (setq truncate-partial-width-windows t)
@@ -252,7 +289,7 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (setq uniquify-ignore-buffers-re "*[^*]+*")
 
 #+end_src
-*** linum
+*** 行番号表示
 #+begin_src emacs-lisp
 (require 'linum)
 
@@ -282,28 +319,11 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
 #+end_src
-*** theme
+*** テーマ
 #+begin_src emacs-lisp
 (load-theme 'hc-zenburn t)
 #+end_src
-*** ツールバーを非表示
-#+begin_src emacs-lisp
-(tool-bar-mode -1)
-#+end_src
-*** modeline
-#+begin_src emacs-lisp
-;; modeline
-;; 行番号の表示
-(line-number-mode t)
-;; 列番号の表示
-(column-number-mode t)
-;; 時刻の表示
-(require 'time)
-(setq display-time-24hr-format t)
-(setq display-time-string-forms '(24-hours ":" minutes))
-(display-time-mode t)
-#+end_src
-** show-paren-mode
+*** 対応括弧の強調表示
 #+begin_src emacs-lisp
 ;; paren-mode：対応する括弧を強調して表示する
 (setq show-paren-delay 0.1) ; 表示までの秒数。初期値は0.125
@@ -316,60 +336,8 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
 (set-face-underline-p 'show-paren-match-face "blue")
 
 #+end_src
-*** redo, undo
-;; redo+
-(use-package redo+
-  :bind ("C-?" . redo))
-;; undo-hist
-(use-package undohist
-  :config (undohist-initialize))
-;; undo-tree
-(use-package undo-tree
-  :config
-  (global-undo-tree-mode))
-;; point-undo
-(use-package point-undo
-  :bind (("M-[" . point-undo)
-		 ("M-]" . point-redo)))
-** backup
-#+begin_src emacs-lisp
-;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
-(setq make-backup-files   t)  ;; 自動バックアップの実行有無
-(setq version-control     t)  ;; バックアップファイルへの番号付与
-(setq kept-new-versions   3)  ;; 最新バックアップファイルの保持数
-(setq kept-old-versions   0)  ;; 最古バックアップファイルの保持数
-(setq delete-old-versions t)  ;; バックアップファイル削除の実行有無
-
-;; ファイルオープン時のバックアップ（~）の格納ディレクトリ
-(setq backup-directory-alist
-      (cons (cons "\\.*$" (expand-file-name "/tmp/emacsbk"))
-            backup-directory-alist))
-
-;; 編集中ファイルの自動バックアップ（有効：t、無効：nil）
-(setq backup-inhibited nil)
-
-;; 終了時に自動バックアップファイルを削除（有効：t、無効：nil）
-(setq delete-auto-save-files nil)
-
-;; 編集中ファイルのバックアップ（有効：t、無効：nil）
-(setq auto-save-list-file-name nil)
-(setq auto-save-list-file-prefix nil)
-
-;; 編集中ファイルのバックアップ間隔（秒）
-(setq auto-save-timeout 3)
-
-;; 編集中ファイルのバックアップ間隔（打鍵）
-(setq auto-save-interval 100)
-
-;; 編集中ファイル（##）の格納ディレクトリ
-(setq auto-save-file-name-transforms
-      `((".*" ,(expand-file-name "/tmp/emacsbk") t)))
-#+end_src
-*** ロックファイルを生成
-#+begin_src emacs-lisp
-(setq create-lockfiles nil)
-#+end_src
-** scroll
+** ナビゲーション、移動
+*** スクロール
 #+begin_src emacs-lisp
 ;; スクロール時のカーソル位置を維持（有効：t、無効：nil）
 (setq scroll-preserve-screen-position t)
@@ -425,7 +393,63 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
     (if (< (- (- end-num bgn-num) (window-height)) 0)
         (goto-char (point-max))
       ad-do-it) ))
+#+end_src
+*** saveplace カーソル位置を保存
+#+begin_src emacs-lisp
+(require 'saveplace)
+(save-place-mode 1) ;; Changed for Emacs 25
+#+end_src
+*** buffer選択画面をアクティブウィンドウに表示する。
+#+begin_src emacs-lisp
+(global-set-key "\C-x\C-b" 'buffer-menu)
+#+end_src
 
+** dired
+#+begin_src emacs-lisp
+;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
+(setq dired-dwim-target t)
+;; ディレクトリを再帰的にコピーする
+(setq dired-recursive-copies 'always)
+;; diredバッファでC-sした時にファイル名だけにマッチするように
+(setq dired-isearch-filenames t)
+#+end_src
+** backup
+#+begin_src emacs-lisp
+;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
+(setq make-backup-files   t)  ;; 自動バックアップの実行有無
+(setq version-control     t)  ;; バックアップファイルへの番号付与
+(setq kept-new-versions   3)  ;; 最新バックアップファイルの保持数
+(setq kept-old-versions   0)  ;; 最古バックアップファイルの保持数
+(setq delete-old-versions t)  ;; バックアップファイル削除の実行有無
+
+;; ファイルオープン時のバックアップ（~）の格納ディレクトリ
+(setq backup-directory-alist
+      (cons (cons "\\.*$" (expand-file-name "/tmp/emacsbk"))
+            backup-directory-alist))
+
+;; 編集中ファイルの自動バックアップ（有効：t、無効：nil）
+(setq backup-inhibited nil)
+
+;; 終了時に自動バックアップファイルを削除（有効：t、無効：nil）
+(setq delete-auto-save-files nil)
+
+;; 編集中ファイルのバックアップ（有効：t、無効：nil）
+(setq auto-save-list-file-name nil)
+(setq auto-save-list-file-prefix nil)
+
+;; 編集中ファイルのバックアップ間隔（秒）
+(setq auto-save-timeout 3)
+
+;; 編集中ファイルのバックアップ間隔（打鍵）
+(setq auto-save-interval 100)
+
+;; 編集中ファイル（##）の格納ディレクトリ
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "/tmp/emacsbk") t)))
+#+end_src
+*** ロックファイルを生成
+#+begin_src emacs-lisp
+(setq create-lockfiles nil)
 #+end_src
 ** isearch
 #+begin_src emacs-lisp
@@ -505,11 +529,6 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
   (global-set-key (kbd "<C-tab>") 'tabbar-forward-tab)
   (global-set-key (kbd "C-q")     'tabbar-backward-tab))
 #+end_src
-*** saveplace カーソル位置を保存
-#+begin_src emacs-lisp
-(require 'saveplace)
-(save-place-mode 1) ;; Changed for Emacs 25
-#+end_src
 *** recentf
 #+begin_src emacs-lisp
 ;; open recent files
@@ -531,33 +550,28 @@ use-package ライブラリが存在しない場合に、init.el の評価が途
   ("C-x C-r" . recentf-ido-find-file))
 #+end_src
 *** ido-mode ファイル選択
-#+begin_src emacs-lisp
-(use-package ido
-  :init
-  (ido-mode t)
-  :config
-  (setq ido-enable-flex-matching t)
-  (when (fboundp 'ido-vertical-mode)
-	(ido-vertical-mode 1))
-  ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
-  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
-#+end_src
-*** M-xをidoで
-#+begin_src emacs-lisp
-(use-package smex
-  :ensure t
-  :config
-  (smex-initialize)
-  :bind
-  (("M-x" . smex)
-   ("M-X" . smex-major-mode-commands)))
-#+end_src
-*** cua-modeの設定 (矩形選択)
-#+begin_src emacs-lisp
-(cua-mode t) ; cua-modeをオン
-(setq cua-enable-cua-keys nil) ; CUAキーバインドを無効にする
-#+end_src
-
+- ido設定
+  #+begin_src emacs-lisp
+  (use-package ido
+    :init
+    (ido-mode t)
+    :config
+    (setq ido-enable-flex-matching t)
+    (when (fboundp 'ido-vertical-mode)
+   	(ido-vertical-mode 1))
+    ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
+    (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
+  #+end_src
+- M-xをidoで
+  #+begin_src emacs-lisp
+  (use-package smex
+    :ensure t
+    :config
+    (smex-initialize)
+    :bind
+    (("M-x" . smex)
+     ("M-X" . smex-major-mode-commands)))
+  #+end_src
 *** migemo
 #+begin_src emacs-lisp
 (use-package migemo

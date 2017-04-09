@@ -141,7 +141,7 @@
 
 ;; フレーム タイトル
 (setq frame-title-format
-      (format "%%f - Emacs %s@%s" emacs-version system-name))
+          (format "%%f - Emacs %s@%s" emacs-version system-name))
 
 ;; 初期画面の非表示（有効：t、無効：nil）
 (setq inhibit-startup-message nil)
@@ -433,11 +433,11 @@
   (setq recentf-auto-save-timer
         (run-with-idle-timer 30 t 'recentf-save-list))
   (defun recentf-ido-find-file ()
-    "Find a recent file using Ido."
-    (interactive)
-    (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-      (when file
-        (find-file file))))
+        "Find a recent file using Ido."
+        (interactive)
+        (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+          (when file
+                (find-file file))))
   (recentf-mode 1)
   :bind
   ("C-x C-r" . recentf-ido-find-file))
@@ -448,7 +448,7 @@
   :config
   (setq ido-enable-flex-matching t)
   (when (fboundp 'ido-vertical-mode)
-    (ido-vertical-mode 1))
+        (ido-vertical-mode 1))
   ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
   (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
 
