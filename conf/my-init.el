@@ -18,6 +18,12 @@
 (unless (require 'use-package nil t)
   (defmacro use-package (&rest args)))
 
+(delete-selection-mode t)
+
+(global-set-key "\C-x\C-b" 'buffer-menu)
+
+(setq visible-bell t)
+
 ;; C-hでbackspace
 (define-key key-translation-map (kbd "C-h") (kbd "<DEL>"))
 
@@ -25,27 +31,8 @@
 (global-set-key [home] 'beginning-of-buffer)
 (global-set-key [end] 'end-of-buffer)
 
-(setq visible-bell t)
-
-(delete-selection-mode t)
-
-(global-set-key "\C-x\C-b" 'buffer-menu)
-
-(tool-bar-mode -1)
-
 ;; TABの表示幅。初期値は8
 (setq-default tab-width 4)
-
-;; modeline
-;; 行番号の表示
-(line-number-mode t)
-;; 列番号の表示
-(column-number-mode t)
-;; 時刻の表示
-(require 'time)
-(setq display-time-24hr-format t)
-(setq display-time-string-forms '(24-hours ":" minutes))
-(display-time-mode t)
 
 ;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
 (setq dired-dwim-target t)
@@ -251,6 +238,29 @@
 (set-face-attribute 'linum nil :height 0.75)
 
 (load-theme 'zenburn t)
+
+(tool-bar-mode -1)
+
+;; modeline
+;; 行番号の表示
+(line-number-mode t)
+;; 列番号の表示
+(column-number-mode t)
+;; 時刻の表示
+(require 'time)
+(setq display-time-24hr-format t)
+(setq display-time-string-forms '(24-hours ":" minutes))
+(display-time-mode t)
+
+;; paren-mode：対応する括弧を強調して表示する
+(setq show-paren-delay 0.1) ; 表示までの秒数。初期値は0.125
+(show-paren-mode t) ; 有効化
+
+;; parenのスタイル: expressionは括弧内も強調表示
+(setq show-paren-style 'mixed)
+;; フェイスを変更する
+(set-face-background 'show-paren-match-face nil)
+(set-face-underline-p 'show-paren-match-face "blue")
 
 ;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
 (setq make-backup-files   t)  ;; 自動バックアップの実行有無
@@ -468,15 +478,5 @@
 (use-package volatile-highlights
   :config
   (volatile-highlights-mode t))
-
-;; paren-mode：対応する括弧を強調して表示する
-(setq show-paren-delay 0.1) ; 表示までの秒数。初期値は0.125
-(show-paren-mode t) ; 有効化
-
-;; parenのスタイル: expressionは括弧内も強調表示
-(setq show-paren-style 'mixed)
-;; フェイスを変更する
-(set-face-background 'show-paren-match-face nil)
-(set-face-underline-p 'show-paren-match-face "blue")
 
 

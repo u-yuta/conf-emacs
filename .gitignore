@@ -48,3 +48,8 @@ flycheck_*.el
 .dir-locals.el
 
 # End of https://www.gitignore.io/api/emacs
+
+/ido.last
+/places
+/recentf
+/smex-items
