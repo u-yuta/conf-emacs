@@ -495,13 +495,22 @@
 (add-to-list 'load-path "~/.emacs.d/elisp/lisp")
 (add-to-list 'load-path "~/.emacs.d/elisp/contrib/lisp" t)
 #+end_src
-*** src block
-#+begin_src emacs-lisp
-;; fontify code in code blocks
-(setq org-src-fontify-natively t)
-
-(setq org-src-tab-acts-natively t)
-#+end_src
+*** 画面表示
+- src blockの色付け
+  #+begin_src emacs-lisp
+  ;; fontify code in code blocks
+  (setq org-src-fontify-natively t)
+   
+  (setq org-src-tab-acts-natively t)
+  #+end_src
+- インデント
+  #+begin_src emacs-lisp
+  (setq org-startup-indented t)
+  #+end_src
+- ファイルオープン時に見出しのみを表示
+  #+begin_src emacs-lisp
+  (setq org-startup-folded (quote content))
+  #+end_src
 *** キーバインド
 
 #+begin_src emacs-lisp

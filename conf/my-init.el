@@ -410,8 +410,12 @@
 
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)
-
+ 
 (setq org-src-tab-acts-natively t)
+
+(setq org-startup-indented t)
+
+(setq org-startup-folded (quote content))
 
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
