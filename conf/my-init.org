@@ -527,6 +527,19 @@
 (setq org-agenda-files (quote ("~/git/org")))
 #+end_src
 
+*** Todo keywords
+#+begin_src emacs-lisp
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
+#+end_src
+
+*** Custom agenda commands
+
+*** Speed keys
+#+begin_src emacs-lisp
+(setq org-use-speed-commands t)
+#+end_src
 ** packages
 
 *** tabbar タブ表示

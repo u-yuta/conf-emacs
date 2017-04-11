@@ -51,7 +51,7 @@
 ;; point-undo
 (use-package point-undo
   :bind (("M-[" . point-undo)
-                 ("M-]" . point-redo)))
+         ("M-]" . point-redo)))
 
 ;; デフォルトの文字コード
 (set-default-coding-systems 'utf-8-dos)
@@ -150,7 +150,7 @@
 
 ;; フレーム タイトル
 (setq frame-title-format
-          (format "%%f - Emacs %s@%s" emacs-version system-name))
+      (format "%%f - Emacs %s@%s" emacs-version system-name))
 
 
 ;; フルスクリーン化
@@ -426,6 +426,12 @@
 (setq org-default-notes-file "~/git/org/refile.org")
 (setq org-agenda-files (quote ("~/git/org")))
 
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
+
+(setq org-use-speed-commands t)
+
 (use-package tabbar
   :config
   ;; tabbar有効化（有効：t、無効：nil）
@@ -464,11 +470,11 @@
   (setq recentf-auto-save-timer
         (run-with-idle-timer 30 t 'recentf-save-list))
   (defun recentf-ido-find-file ()
-        "Find a recent file using Ido."
-        (interactive)
-        (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-          (when file
-                (find-file file))))
+    "Find a recent file using Ido."
+    (interactive)
+    (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+      (when file
+        (find-file file))))
   (recentf-mode 1)
   :bind
   ("C-x C-r" . recentf-ido-find-file))
@@ -479,7 +485,7 @@
   :config
   (setq ido-enable-flex-matching t)
   (when (fboundp 'ido-vertical-mode)
-      (ido-vertical-mode 1))
+  (ido-vertical-mode 1))
   ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
   (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
 
