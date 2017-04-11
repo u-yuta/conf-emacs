@@ -11,7 +11,10 @@
                 "~/.emacs.d/conf"
                 ) load-path))
 
-;(load "my-init")
+; org-modeの最新版を使用する。
+(add-to-list 'load-path "~/.emacs.d/elisp/org-mode/lisp")
+(add-to-list 'load-path "~/.emacs.d/elisp/org-mode/contrib/lisp" t)
+
 (org-babel-load-file "~/.emacs.d/conf/my-init.org")
 (custom-set-variables
  ;; custom-set-variables was added by Custom.

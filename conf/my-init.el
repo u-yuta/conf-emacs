@@ -405,9 +405,6 @@
  '(lambda() (setq w32-ime-composition-window nil))
  )
 
-(add-to-list 'load-path "~/.emacs.d/elisp/lisp")
-(add-to-list 'load-path "~/.emacs.d/elisp/contrib/lisp" t)
-
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)
  

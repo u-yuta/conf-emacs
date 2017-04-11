@@ -490,11 +490,6 @@
  )
 #+end_src
 ** org-mode
-*** 最新版を使用する。
-#+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/elisp/lisp")
-(add-to-list 'load-path "~/.emacs.d/elisp/contrib/lisp" t)
-#+end_src
 *** 画面表示
 - src blockの色付け
   #+begin_src emacs-lisp
