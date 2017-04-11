@@ -1,4 +1,3 @@
-
 (let ( (default-directory
          (file-name-as-directory (concat user-emacs-directory "site-lisp")))
        )
@@ -51,7 +50,7 @@
 ;; point-undo
 (use-package point-undo
   :bind (("M-[" . point-undo)
-         ("M-]" . point-redo)))
+		 ("M-]" . point-redo)))
 
 ;; デフォルトの文字コード
 (set-default-coding-systems 'utf-8-dos)
@@ -84,13 +83,13 @@
 
 ;; ミニバッファに移動した際は最初に日本語入力が無効な状態にする
 (add-hook 'minibuffer-setup-hook 'deactivate-input-method)
- 
+
 ;; isearch に移行した際に日本語入力を無効にする
 (add-hook 'isearch-mode-hook '(lambda ()
                                 (deactivate-input-method)
                                 (setq w32-ime-composition-window (minibuffer-window))))
 (add-hook 'isearch-mode-end-hook '(lambda () (setq w32-ime-composition-window nil)))
- 
+
 ;; helm 使用中に日本語入力を無効にする
 (advice-add 'helm :around '(lambda (orig-fun &rest args)
                              (let ((select-window-functions nil)
@@ -150,7 +149,7 @@
 
 ;; フレーム タイトル
 (setq frame-title-format
-      (format "%%f - Emacs %s@%s" emacs-version system-name))
+	  (format "%%f - Emacs %s@%s" emacs-version system-name))
 
 
 ;; フルスクリーン化
@@ -168,7 +167,7 @@
 (line-number-mode t)
 ;; 列番号の表示（有効：t、無効：nil）
 (column-number-mode t)
- 
+
 ;; モードライン カスタマイズ
 (setq-default
  mode-line-format
@@ -202,11 +201,11 @@
 (coding-system-put 'cp932-dos :mnemonic ?P)
 (coding-system-put 'cp932-unix :mnemonic ?P)
 (coding-system-put 'cp932-mac :mnemonic ?P)
- 
+
 ;; UTF-8エンコードの表記変更
 (coding-system-put 'utf-8 :mnemonic ?U)
 (coding-system-put 'utf-8-with-signature :mnemonic ?u)
- 
+
 ;; 改行コードの表記追加
 (setq eol-mnemonic-dos       ":Dos ")
 (setq eol-mnemonic-mac       ":Mac ")
@@ -407,7 +406,7 @@
 
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)
- 
+
 (setq org-src-tab-acts-natively t)
 
 (setq org-startup-indented t)
@@ -419,15 +418,120 @@
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c b") 'org-iswitchb)
 
+(global-set-key (kbd "<f12>") 'org-agenda)
+
 (setq org-directory "~/git/org")
 (setq org-default-notes-file "~/git/org/refile.org")
 (setq org-agenda-files (quote ("~/git/org")))
 
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING"))))
+
+;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings, and org-protocol
+(setq org-capture-templates
+      (quote (("t" "todo" entry (file "~/git/org/refile.org")
+               "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+              ("r" "respond" entry (file "~/git/org/refile.org")
+               "* NEXT Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+              ("n" "note" entry (file "~/git/org/refile.org")
+               "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+              ("j" "Journal" entry (file+datetree "~/git/org/journal.org")
+               "* %?\n%U\n" :clock-in t :clock-resume t)
+              ("w" "org-protocol" entry (file "~/git/org/refile.org")
+               "* TODO Review %c\n%U\n" :immediate-finish t)
+              ("m" "Meeting" entry (file "~/git/org/refile.org")
+               "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
+              ("p" "Phone call" entry (file "~/git/org/refile.org")
+               "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+              ("h" "Habit" entry (file "~/git/org/refile.org")
+               "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
 
 (setq org-use-speed-commands t)
+
+;; Resume clocking task when emacs is restarted
+(org-clock-persistence-insinuate)
+;;
+;; Show lot of clocking history so it's easy to pick items off the C-F11 list
+(setq org-clock-history-length 23)
+;; Resume clocking task on clock-in if the clock is open
+(setq org-clock-in-resume t)
+;; Change tasks to NEXT when clocking in
+(setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
+;; Separate drawers for clocking and logs
+(setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
+;; Save clock data and state changes and notes in the LOGBOOK drawer
+(setq org-clock-into-drawer t)
+;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+(setq org-clock-out-remove-zero-time-clocks t)
+;; Clock out when moving task to a done state
+(setq org-clock-out-when-done t)
+;; Save the running clock and all clock history when exiting Emacs, load it on startup
+(setq org-clock-persist t)
+;; Do not prompt to resume an active clock
+(setq org-clock-persist-query-resume nil)
+;; Enable auto clock resolution for finding open clocks
+(setq org-clock-auto-clock-resolution (quote when-no-clock-is-running))
+;; Include current clocking task in clock reports
+(setq org-clock-report-include-clocking-task t)
+
+(setq bh/keep-clock-running nil)
+
+(defun bh/clock-in-to-next (kw)
+  "Switch a task from TODO to NEXT when clocking in.
+Skips capture tasks, projects, and subprojects.
+Switch projects and subprojects from NEXT back to TODO"
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "TODO"))
+           (bh/is-task-p))
+      "NEXT")
+     ((and (member (org-get-todo-state) (list "NEXT"))
+           (bh/is-project-p))
+      "TODO"))))
+
+(defun bh/is-project-p ()
+  "Any task with a todo keyword subtask"
+  (save-restriction
+    (widen)
+    (let ((has-subtask)
+          (subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (save-excursion
+        (forward-line 1)
+        (while (and (not has-subtask)
+                    (< (point) subtree-end)
+                    (re-search-forward "^\*+ " subtree-end t))
+          (when (member (org-get-todo-state) org-todo-keywords-1)
+            (setq has-subtask t))))
+      (and is-a-task has-subtask))))
+
+(defun bh/is-project-subtree-p ()
+  "Any task with a todo keyword that is in a project subtree.
+Callers of this function already widen the buffer view."
+  (let ((task (save-excursion (org-back-to-heading 'invisible-ok)
+                              (point))))
+    (save-excursion
+      (bh/find-project-task)
+      (if (equal (point) task)
+          nil
+        t))))
+
+(defun bh/is-task-p ()
+  "Any task with a todo keyword and no subtask"
+  (save-restriction
+    (widen)
+    (let ((has-subtask)
+          (subtree-end (save-excursion (org-end-of-subtree t)))
+          (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
+      (save-excursion
+        (forward-line 1)
+        (while (and (not has-subtask)
+                    (< (point) subtree-end)
+                    (re-search-forward "^\*+ " subtree-end t))
+          (when (member (org-get-todo-state) org-todo-keywords-1)
+            (setq has-subtask t))))
+      (and is-a-task (not has-subtask)))))
 
 (use-package tabbar
   :config
@@ -467,11 +571,11 @@
   (setq recentf-auto-save-timer
         (run-with-idle-timer 30 t 'recentf-save-list))
   (defun recentf-ido-find-file ()
-    "Find a recent file using Ido."
-    (interactive)
-    (let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
-      (when file
-        (find-file file))))
+	"Find a recent file using Ido."
+	(interactive)
+	(let ((file (ido-completing-read "Choose recent file: " recentf-list nil t)))
+	  (when file
+		(find-file file))))
   (recentf-mode 1)
   :bind
   ("C-x C-r" . recentf-ido-find-file))
@@ -482,7 +586,7 @@
   :config
   (setq ido-enable-flex-matching t)
   (when (fboundp 'ido-vertical-mode)
-  (ido-vertical-mode 1))
+      (ido-vertical-mode 1))
   ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
   (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
 
