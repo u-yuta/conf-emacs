@@ -255,7 +255,10 @@
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
 
-(load-theme 'hc-zenburn t)
+;; Don't change size of org-mode headlines (but keep other size-changes)
+(setq solarized-scale-org-headlines nil)
+
+(load-theme 'solarized-light t)
 
 ;; paren-mode：対応する括弧を強調して表示する
 (setq show-paren-delay 0.1) ; 表示までの秒数。初期値は0.125

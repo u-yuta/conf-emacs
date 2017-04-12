@@ -23,7 +23,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-	(magit markdown-mode hc-zenburn-theme volatile-highlights zenburn-theme migemo ido-vertical-mode tabbar use-package)))
+	(solarized-theme magit markdown-mode hc-zenburn-theme volatile-highlights zenburn-theme migemo ido-vertical-mode tabbar use-package)))
  '(tabbar-mode nil nil (tabbar)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -319,9 +319,12 @@
 ;; 文字サイズ
 (set-face-attribute 'linum nil :height 0.75)
 #+end_src
-*** テーマ
+*** Theme
 #+begin_src emacs-lisp
-(load-theme 'hc-zenburn t)
+;; Don't change size of org-mode headlines (but keep other size-changes)
+(setq solarized-scale-org-headlines nil)
+
+(load-theme 'solarized-light t)
 #+end_src
 *** 対応括弧の強調表示
 #+begin_src emacs-lisp
