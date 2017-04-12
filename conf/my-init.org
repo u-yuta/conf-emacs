@@ -517,6 +517,8 @@
 (global-set-key (kbd "C-c b") 'org-iswitchb)
 
 (global-set-key (kbd "<f12>") 'org-agenda)
+(global-set-key (kbd "<f11>") 'org-clock-goto)
+(global-set-key (kbd "C-<f11>") 'org-clock-in)
 #+end_src
 
 *** ファイルの場所
@@ -554,7 +556,6 @@
               ("h" "Habit" entry (file "~/git/org/refile.org")
                "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
 #+end_src
-*** Custom agenda commands
 
 *** Speed keys
 #+begin_src emacs-lisp
@@ -646,6 +647,15 @@ Callers of this function already widen the buffer view."
           (when (member (org-get-todo-state) org-todo-keywords-1)
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
+#+END_SRC
+
+*** Latex export
+#+BEGIN_SRC emacs-lisp
+(require 'ox-latex)
+(require 'ox-bibtex)
+
+(setq org-latex-default-class "jsarticle")
+(setq org-latex-pdf-process '("latexmk %f"))
 #+END_SRC
 ** packages
 

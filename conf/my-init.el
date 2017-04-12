@@ -422,6 +422,8 @@
 (global-set-key (kbd "C-c b") 'org-iswitchb)
 
 (global-set-key (kbd "<f12>") 'org-agenda)
+(global-set-key (kbd "<f11>") 'org-clock-goto)
+(global-set-key (kbd "C-<f11>") 'org-clock-in)
 
 (setq org-directory "~/git/org")
 (setq org-default-notes-file "~/git/org/refile.org")
@@ -535,6 +537,12 @@ Callers of this function already widen the buffer view."
           (when (member (org-get-todo-state) org-todo-keywords-1)
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
+
+(require 'ox-latex)
+(require 'ox-bibtex)
+
+(setq org-latex-default-class "jsarticle")
+(setq org-latex-pdf-process '("latexmk %f"))
 
 (use-package tabbar
   :config
