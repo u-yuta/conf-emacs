@@ -406,8 +406,8 @@
 #+begin_src emacs-lisp
 (global-set-key "\C-x\C-b" 'buffer-menu)
 #+end_src
-
-** dired
+** File
+*** dired
 #+begin_src emacs-lisp
 ;; diredを2つのウィンドウで開いている時に、デフォルトの移動orコピー先をもう一方のdiredで開いているディレクトリにする
 (setq dired-dwim-target t)
@@ -415,6 +415,11 @@
 (setq dired-recursive-copies 'always)
 ;; diredバッファでC-sした時にファイル名だけにマッチするように
 (setq dired-isearch-filenames t)
+#+end_src
+*** Finding files and URLs at point
+#+begin_src emacs-lisp
+;(ffap-bindings)
+; Ido
 #+end_src
 ** backup
 #+begin_src emacs-lisp
@@ -721,7 +726,11 @@ Callers of this function already widen the buffer view."
     (when (fboundp 'ido-vertical-mode)
    	(ido-vertical-mode 1))
     ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
-    (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
+    (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
+    ; The following expression will make Ido guess the context,
+    ; like ffap.
+    (setq ido-use-filename-at-point 'guess))
+    ; You can disable URL ffap support by toggling ido-use-url-at-point.
   #+end_src
 - M-xをidoで
   #+begin_src emacs-lisp

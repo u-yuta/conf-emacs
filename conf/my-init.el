@@ -337,6 +337,9 @@
 ;; diredバッファでC-sした時にファイル名だけにマッチするように
 (setq dired-isearch-filenames t)
 
+;(ffap-bindings)
+; Ido
+
 ;; ファイルオープン時のバックアップ（~）（有効：t、無効：nil）
 (setq make-backup-files   t)  ;; 自動バックアップの実行有無
 (setq version-control     t)  ;; バックアップファイルへの番号付与
@@ -599,7 +602,11 @@ Callers of this function already widen the buffer view."
   (when (fboundp 'ido-vertical-mode)
       (ido-vertical-mode 1))
   ; ido-vertical にて C-n, C-p, ↑, ↓で選択できるようにする
-  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
+  (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
+  ; The following expression will make Ido guess the context,
+  ; like ffap.
+  (setq ido-use-filename-at-point 'guess))
+  ; You can disable URL ffap support by toggling ido-use-url-at-point.
 
 (use-package smex
   :ensure t
